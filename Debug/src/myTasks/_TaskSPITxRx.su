@@ -1,0 +1,2 @@
+_TaskSPITxRx.c:11:6:vTaskSPITxRxSetup	8	static
+_TaskSPITxRx.c:18:6:vTaskSPITxRx	24	static
