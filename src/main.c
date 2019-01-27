@@ -58,7 +58,7 @@ int main(void)
 
 	//xTaskCreate(vTaskSPITxRx, (unsigned char*)"spi", configMINIMAL_STACK_SIZE, NULL, 2, NULL);
 	xTaskCreate(vTaskW5500, (const char*)"w5500", configMINIMAL_STACK_SIZE, NULL, 4, NULL);
-	xTaskCreate(vTaskMBParser, (const char*)"MBp", configMINIMAL_STACK_SIZE, &parser0params, 3, NULL);
+	xTaskCreate(vTaskMBParser, (const char*)"MBp", configMINIMAL_STACK_SIZE+sizeof(sADUFrame), &parser0params, 3, NULL);
 
 	vTaskStartScheduler();
 

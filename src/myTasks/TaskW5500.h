@@ -19,7 +19,7 @@
 #include "w5500_spiregisters.h"
 
 #define TCP_SOCKETS_COUNT	1
-#define MAX_RX_CHUNK		10		// max bytes per 1 RX data read from socket memory
+#define MAX_RX_CHUNK		20		// max bytes per 1 RX data read from socket memory
 #define SOCKET_RXBUFFER_LEN	100
 #define CONTROL_MESSAGE_BUFFER_LEN 260
 
