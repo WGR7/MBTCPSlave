@@ -56,6 +56,9 @@ int main(void)
 	parser0params.outputMessageQueue = W5500CB.ControlMessageQueue;
 	parser0params.sourceSocketNo = 0;
 
+	// prepare modbus data model
+	DataModelInit();
+
 	//xTaskCreate(vTaskSPITxRx, (unsigned char*)"spi", configMINIMAL_STACK_SIZE, NULL, 2, NULL);
 	xTaskCreate(vTaskW5500, (const char*)"w5500", configMINIMAL_STACK_SIZE, NULL, 4, NULL);
 	xTaskCreate(vTaskMBParser, (const char*)"MBp", configMINIMAL_STACK_SIZE+sizeof(sADUFrame), &parser0params, 3, NULL);
@@ -72,7 +75,7 @@ int main(void)
 }
 
 
-extern StreamBufferHandle_t SPIWriteStreamHandle;
+//extern StreamBufferHandle_t SPIWriteStreamHandle;
 static void vTaskAlive( void *pvParameters ){
 	while(1){
 		GPIO_SetBits(GPIOA, GPIO_Pin_5);

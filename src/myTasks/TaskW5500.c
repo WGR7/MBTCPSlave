@@ -175,10 +175,15 @@ void W5500_ProcessControlMessages(){
 				uint16_t frame_len = newmessage.MessageLength;
 				W5500_WriteToSocket(target_socket, (uint8_t*)(newmessage.DataPointer), frame_len);
 				// Important! Destroy allocated message data!
-				free(newmessage.DataPointer);
+				// No! Not really! It should be the message's source bussines to do it, or to not do it
+				// free(newmessage.DataPointer);
 				break;
 			case W5500_MESSAGE_UPDATE_RX:
 				; // because C
+				break;
+			case W5500_KILL_CONNECTION:
+				W5500_WriteByte(W5500_S_CR, BSB_SOCKET_REG(newmessage.SocketNo), W5500_S_DISCON);
+				xStreamBufferReset(W5500CB.Sockets[newmessage.SocketNo].RXStreamHandle);
 				break;
 		}
 

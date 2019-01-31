@@ -18,6 +18,9 @@
 #include "TaskW5500.h"		// <-- for common message declaration
 
 #define MAX_REGS_IN_FRAME	126
+// data model defines
+#define HOLDING_REGS_COUNT	50
+
 
 typedef struct{
 	StreamBufferHandle_t 	inputStream;
@@ -26,31 +29,45 @@ typedef struct{
 }sParserInOutParameter;
 
 typedef enum{
-	FCN_READ_HOLD_REG			= (uint8_t)0x03,
+	FCN_READ_HOLD_REGS			= (uint8_t)0x03,
 	FCN_WRITE_SING_REG			= (uint8_t)0x06,
 	FCN_WRITE_MULT_REGS			= (uint8_t)0x10
 }eFcnCode;
 
-typedef struct{
+typedef struct __attribute__((packed)){
 	uint16_t		TransID;
 	uint16_t		ProtocolID;
 	uint16_t		Length;		// number of bytes of data + 1 byte for unit id
 	uint8_t			UnitID;
 }sMBAPHeader;
 
-typedef struct{
+typedef struct __attribute__((packed)){
 	eFcnCode		FunctionCode;
-	uint16_t		Data[MAX_REGS_IN_FRAME];
+	uint8_t		Data[2*MAX_REGS_IN_FRAME + 1];
 }sPDU;
 
-typedef struct{
+typedef struct __attribute__((packed)){
 	sMBAPHeader		MBAP;
 	sPDU			PDU;
 }sADUFrame;
 
+typedef struct{
+	int16_t	HoldingRegs[HOLDING_REGS_COUNT];
+}sDataModel;
+
 #define BYTES_IN_WORD_SWAP(word) ((word>>8) | (word<<8))
+
+// global data model
+sDataModel		DataModel;
 
 void vTaskMBParser(void *pvParameters);
 
+// processing different function codes
+void puiProcessReadHoldingRegs(sADUFrame *request_frame);
+
+// data model functions
+void DataModelInit();
+int16_t uiGetRegisterValue(uint16_t register_no);					// register_no 0... HOLDING_REGS_COUNT-1
+void uiSetRegisterValue(uint16_t register_no, int16_t value);		// register_no 0... HOLDING_REGS_COUNT-1
 
 #endif /* MYTASKS_TASKMBPARSER_H_ */

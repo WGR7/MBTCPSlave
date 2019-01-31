@@ -55,7 +55,8 @@ typedef struct{
 
 typedef enum{
 	W5500_MESSAGE_SEND			= 0x01,
-	W5500_MESSAGE_UPDATE_RX		= 0x02
+	W5500_MESSAGE_UPDATE_RX		= 0x02,
+	W5500_KILL_CONNECTION		= 0x10
 }eControlMessageType;
 
 typedef struct{
@@ -76,7 +77,7 @@ typedef struct{
 
 typedef struct{
 	eControlMessageType		MessageType;
-	uint16_t				MessageLength;
+	uint16_t				MessageLength;		// byte count of frame to be sent
 	uint8_t					SocketNo;
 	void					*DataPointer;
 }sW5500ControlMessage;

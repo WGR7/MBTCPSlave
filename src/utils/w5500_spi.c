@@ -33,6 +33,7 @@ void W5500_ReadRegisters(uint16_t reg_offset, uint8_t block_no, uint16_t reg_cou
 	}
 
 	// transmit header
+	/*
 	for(uint8_t i=0; i<3; i++){
 		while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET){}
 		SPI_I2S_SendData(SPI1, header_buff[i]);
@@ -40,6 +41,21 @@ void W5500_ReadRegisters(uint16_t reg_offset, uint8_t block_no, uint16_t reg_cou
 		while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE) == RESET){}
 		SPI_I2S_ReceiveData(SPI1);
 	}
+	*/
+	uint16_t miso_counter = 0;
+	uint16_t mosi_counter = 0;
+	while(!((miso_counter>2) && (mosi_counter>2))){
+		if((SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE)==SET) && mosi_counter<3){
+			SPI_I2S_SendData(SPI1, header_buff[mosi_counter]);
+			mosi_counter++;
+		}
+		if((SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE)==SET) && miso_counter<3){
+			SPI_I2S_ReceiveData(SPI1);
+			miso_counter++;
+		}
+	}
+
+
 	// in loop for each byte to read:
 	for(uint8_t i=0; i<reg_count; i++){
 		while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET){}
