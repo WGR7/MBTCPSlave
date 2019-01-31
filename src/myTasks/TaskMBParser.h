@@ -19,7 +19,7 @@
 
 #define MAX_REGS_IN_FRAME	126
 // data model defines
-#define HOLDING_REGS_COUNT	50
+#define HOLDING_REGS_COUNT	200
 
 
 typedef struct{

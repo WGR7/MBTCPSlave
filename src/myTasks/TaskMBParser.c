@@ -83,7 +83,7 @@ void puiProcessReadHoldingRegs(sADUFrame *request_frame){
 	uint16_t regs_count = (((uint16_t)*(request_frame->PDU.Data+2))<<8) | ((uint16_t)*(request_frame->PDU.Data+3));
 
 	// check if registers quantity is ok
-	if((regs_count>=HOLDING_REGS_COUNT)||regs_count<1){
+	if((regs_count>=HOLDING_REGS_COUNT)||regs_count<1||regs_count>125){
 		// prepare exception 03
 	}else{
 		// check if starting address ok

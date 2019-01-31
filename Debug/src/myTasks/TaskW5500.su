@@ -2,6 +2,6 @@ TaskW5500.c:12:9:W5500_Init	24	static
 TaskW5500.c:53:6:vTaskW5500	24	static
 TaskW5500.c:93:6:W5500_SetupTCPSocket	16	static
 TaskW5500.c:106:6:W5500_ProcessTCPSocket	24	static
-TaskW5500.c:130:6:W5500_ReadoutTCPSocketToStream	32	static
+TaskW5500.c:130:6:W5500_ReadoutTCPSocketToStream	40	static
 TaskW5500.c:160:6:W5500_ProcessControlMessages	24	static
-TaskW5500.c:188:6:W5500_WriteToSocket	24	static
+TaskW5500.c:193:6:W5500_WriteToSocket	24	static

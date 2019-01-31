@@ -1,1 +1,5 @@
-TaskMBParser.c:12:6:vTaskMBParser	80	static
+TaskMBParser.c:12:6:vTaskMBParser	328	static
+TaskMBParser.c:81:6:puiProcessReadHoldingRegs	32	static
+TaskMBParser.c:113:6:DataModelInit	8	static
+TaskMBParser.c:118:9:uiGetRegisterValue	16	static
+TaskMBParser.c:125:6:uiSetRegisterValue	16	static

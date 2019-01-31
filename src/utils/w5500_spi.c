@@ -33,15 +33,6 @@ void W5500_ReadRegisters(uint16_t reg_offset, uint8_t block_no, uint16_t reg_cou
 	}
 
 	// transmit header
-	/*
-	for(uint8_t i=0; i<3; i++){
-		while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET){}
-		SPI_I2S_SendData(SPI1, header_buff[i]);
-		// still need to read just to clear RX buffer...
-		while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE) == RESET){}
-		SPI_I2S_ReceiveData(SPI1);
-	}
-	*/
 	uint16_t miso_counter = 0;
 	uint16_t mosi_counter = 0;
 	while(!((miso_counter>2) && (mosi_counter>2))){
@@ -55,16 +46,19 @@ void W5500_ReadRegisters(uint16_t reg_offset, uint8_t block_no, uint16_t reg_cou
 		}
 	}
 
-
-	// in loop for each byte to read:
-	for(uint8_t i=0; i<reg_count; i++){
-		while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET){}
-		// transmit 0x00 just to roll the clock
-		SPI_I2S_SendData(SPI1, 0x00);
-		// wait for new received data
-		while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE) == RESET){}
-		// read it to "dest"
-		dest[i] = SPI_I2S_ReceiveData(SPI1);
+	// transmit the data
+	miso_counter = 0;
+	mosi_counter = 0;
+	while(!((miso_counter>reg_count-1) && (mosi_counter>reg_count-1))){
+		if((SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE)==SET) && mosi_counter<reg_count){
+			// transmit 0x00 just to roll the clock
+			SPI_I2S_SendData(SPI1, 0x00);
+			mosi_counter++;
+		}
+		if((SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE)==SET) && miso_counter<reg_count){
+			dest[miso_counter] = SPI_I2S_ReceiveData(SPI1);
+			miso_counter++;
+		}
 	}
 
 	// wait till tx'ing is done
