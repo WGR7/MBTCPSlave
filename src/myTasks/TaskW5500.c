@@ -85,7 +85,7 @@ void vTaskW5500(void *pvParameters){
 		// control messages processing
 		W5500_ProcessControlMessages();
 
-		// This routine every 50ms
+		// This routine every 20ms
 		vTaskDelay(pdMS_TO_TICKS(20));
 	}
 }
@@ -159,24 +159,19 @@ void W5500_ReadoutTCPSocketToStream(uint8_t socket_no){
 
 void W5500_ProcessControlMessages(){
 	// check if any new messages
-	if(uxQueueMessagesWaiting(W5500CB.ControlMessageQueue) > 0){
+	while(uxQueueMessagesWaiting(W5500CB.ControlMessageQueue) > 0){
 		sW5500ControlMessage newmessage;
-
 		xQueueReceive(W5500CB.ControlMessageQueue, &newmessage, pdMS_TO_TICKS(100));
 		// check type of message
-
 		switch(newmessage.MessageType){
 			case W5500_MESSAGE_SEND:
 				; // because C
 				// <message type> <target socket no> <frame len> < ... actual frame ... >
-				// check which socket to write to:
 				uint8_t target_socket = newmessage.SocketNo;
-				// check length of frame to send
-				uint16_t frame_len = newmessage.MessageLength;
-				W5500_WriteToSocket(target_socket, (uint8_t*)(newmessage.DataPointer), frame_len);
-				// Important! Destroy allocated message data!
-				// No! Not really! It should be the message's source bussines to do it, or to not do it
-				// free(newmessage.DataPointer);
+				if(LINK_IS_UP && (W5500CB.Sockets[target_socket].State == SOCKET_ESTABLISHED)){
+					W5500_WriteToSocket(target_socket, (uint8_t*)(newmessage.DataPointer), newmessage.MessageLength);
+					// Should the data be freed now? No, it should be data source's bussiness to do or not do it
+				}
 				break;
 			case W5500_MESSAGE_UPDATE_RX:
 				; // because C

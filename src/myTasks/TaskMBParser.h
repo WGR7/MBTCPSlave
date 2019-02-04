@@ -20,6 +20,9 @@
 #define MAX_REGS_IN_FRAME	126
 // data model defines
 #define HOLDING_REGS_COUNT	200
+#define EXC_CODE_ILLEGAL_FCN		0x01
+#define EXC_CODE_ILLEGAL_DATA_ADDR	0x02
+#define EXC_CODE_ILLEGAL_DATA_VAL	0x03
 
 
 typedef struct{
@@ -30,9 +33,14 @@ typedef struct{
 
 typedef enum{
 	FCN_READ_HOLD_REGS			= (uint8_t)0x03,
+	FCN_EXC_READ_HOLD_REGS		= (uint8_t)0x83,
 	FCN_WRITE_SING_REG			= (uint8_t)0x06,
-	FCN_WRITE_MULT_REGS			= (uint8_t)0x10
+	FCN_EXC_WRITE_SING_REG		= (uint8_t)0x86,
+	FCN_WRITE_MULT_REGS			= (uint8_t)0x10,
+	FCN_EXC_WRITE_MULT_REGS		= (uint8_t)0x90,
 }eFcnCode;
+
+
 
 typedef struct __attribute__((packed)){
 	uint16_t		TransID;
@@ -60,14 +68,35 @@ typedef struct{
 // global data model
 sDataModel		DataModel;
 
+// Task for processing incoming requests and replying with answer
 void vTaskMBParser(void *pvParameters);
 
-// processing different function codes
-void puiProcessReadHoldingRegs(sADUFrame *request_frame);
+// dealing with exceptions
+void vProcessException(sADUFrame *request_frame, uint8_t exception_code);
 
-// data model functions
+// processing different modbus function codes
+void vProcessReadHoldingRegs(sADUFrame *request_frame);
+void vProcessWriteSingleReg(sADUFrame *request_frame);
+
+// Data model functions for interacting with controlled device/functionality
+
+/**
+ * Initializes modbus data model register to 0's
+ */
 void DataModelInit();
-int16_t uiGetRegisterValue(uint16_t register_no);					// register_no 0... HOLDING_REGS_COUNT-1
+
+/**
+ * Returns a 2 byte integer value associated with particular holding register
+ * @param register_no Number of requested register, starting from 0, up to HOLDING_REGS_COUNT-1
+ * @return Register value
+ */
+int16_t uiGetRegisterValue(uint16_t register_no);
+
+/**
+ * Sets a register int value
+ * @param register_no A register number, starting from 0, up to HOLDING_REGS_COUNT-1
+ * @param value New value of register, from a range of int16
+ */
 void uiSetRegisterValue(uint16_t register_no, int16_t value);		// register_no 0... HOLDING_REGS_COUNT-1
 
 #endif /* MYTASKS_TASKMBPARSER_H_ */
