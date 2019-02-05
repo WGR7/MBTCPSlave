@@ -76,7 +76,8 @@ void vProcessException(sADUFrame *request_frame, uint8_t exception_code);
 
 // processing different modbus function codes
 void vProcessReadHoldingRegs(sADUFrame *request_frame);
-void vProcessWriteSingleReg(sADUFrame *request_frame);
+void vProcessWriteSingleHoldingReg(sADUFrame *request_frame);
+void vProcessWriteHoldingRegs(sADUFrame *request_frame);
 
 // Data model functions for interacting with controlled device/functionality
 

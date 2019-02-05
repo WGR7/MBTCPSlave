@@ -55,7 +55,7 @@ void vTaskMBParser(void *pvParameters){
 				vProcessReadHoldingRegs(&aduframe);
 				break;
 			case FCN_WRITE_SING_REG:
-				vProcessWriteSingleReg(&aduframe);
+				vProcessWriteSingleHoldingReg(&aduframe);
 				;
 				break;
 			default:
@@ -77,7 +77,9 @@ void vTaskMBParser(void *pvParameters){
 		xQueueSend(outputMessageQueueHandle, &reply, pdMS_TO_TICKS(500));
 		// Is it safe to assume reply.DataPointer will hold a valid aduframe until that aduframe is send out to socket?
 		// Assuming modbus client will not send another request before getting an answer to previous, no new data will come into
-		// aduframe buffer before it will be sent out to socket.
+		// aduframe buffer before it will be sent out to socket. But to be sure no new data will overwrite aduframe, wait some
+		// short time to give W5500 process some time to send data from message queue.
+		vTaskDelay(pdMS_TO_TICKS(50));
 
 	}
 }
@@ -115,7 +117,7 @@ void vProcessReadHoldingRegs(sADUFrame *request_frame){
 	}
 }
 
-void vProcessWriteSingleReg(sADUFrame *request_frame){
+void vProcessWriteSingleHoldingReg(sADUFrame *request_frame){
 	uint16_t starting_reg = (((uint16_t)*(request_frame->PDU.Data))<<8) | ((uint16_t)*(request_frame->PDU.Data+1));
 	uint16_t reg_value = (((uint16_t)*(request_frame->PDU.Data+2))<<8) | ((uint16_t)*(request_frame->PDU.Data+3));
 
@@ -138,7 +140,38 @@ void vProcessWriteSingleReg(sADUFrame *request_frame){
 		//
 		// now request_frame contains response, either actual response to request or an exception
 	}
+}
 
+void vProcessWriteHoldingRegs(sADUFrame *request_frame){
+	uint16_t starting_reg = (((uint16_t)*(request_frame->PDU.Data))<<8) | ((uint16_t)*(request_frame->PDU.Data+1));
+	uint16_t regs_count = (((uint16_t)*(request_frame->PDU.Data+2))<<8) | ((uint16_t)*(request_frame->PDU.Data+3));
+
+	// check if registers quantity is ok
+	if((regs_count>=HOLDING_REGS_COUNT)||regs_count<1||regs_count>125){
+		// prepare exception 03
+		vProcessException(request_frame, EXC_CODE_ILLEGAL_DATA_VAL);
+	}else{
+		// check if starting address ok
+		if(starting_reg+regs_count >= HOLDING_REGS_COUNT){
+			// prepare exception 02
+			vProcessException(request_frame, EXC_CODE_ILLEGAL_DATA_ADDR);
+		}else{
+			// actual processing
+			// lets use already alloctated adu frame, fill it up with response values and clear the rest of bytes
+			// mbap.transid, protocolid, unitid, pdu.fcncode - left the same
+			// mbap.length - calculate new! = 1byte unitid + 1byte fcncode + 2bytes starting reg + 2 bytes regs count
+			request_frame->MBAP.Length = 6;
+			// start filing data - starting from Data[6]
+			for(uint16_t reg_pointer=0; reg_pointer<regs_count; reg_pointer++){
+				uint8_t *pHiByte = request_frame->PDU.Data+2*reg_pointer+6;
+				uint8_t *pLoByte = pHiByte+1;
+				int16_t reg_value = (((uint16_t)*(pHiByte))<<8) | ((uint16_t)*(pLoByte));
+				uiSetRegisterValue(reg_pointer+starting_reg, reg_value);
+			}
+			//
+			// now request_frame contains response, either actual response to request or an exception
+		}
+	}
 }
 
 void vProcessException(sADUFrame *request_frame, uint8_t exception_code){
