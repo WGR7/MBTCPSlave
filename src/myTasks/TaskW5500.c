@@ -111,11 +111,11 @@ void W5500_ProcessTCPSocket(uint8_t socket_no){
 			// clear stream rx buffer...
 			xStreamBufferReset(W5500CB.Sockets[socket_no].RXStreamHandle);
 			// if close, need to init and start listening
-			//uint8_t tmp[] = {W5500_S_OPEN, W5500_S_LISTEN};
-			//W5500_WriteRegisters(W5500_S_CR, BSB_SOCKET_REG(socket_no), 1, tmp);
-			//W5500_WriteRegisters(W5500_S_CR, BSB_SOCKET_REG(socket_no), 1, tmp+1);
 			W5500_WriteByte(W5500_S_CR, BSB_SOCKET_REG(socket_no), W5500_S_OPEN);
 			W5500_WriteByte(W5500_S_CR, BSB_SOCKET_REG(socket_no), W5500_S_LISTEN);
+			// also reset stat's counters
+			W5500CB.Sockets[socket_no].StatsRxBytes = 0;
+			W5500CB.Sockets[socket_no].StatsTxBytes = 0;
 			break;
 		case SOCKET_CLOSE_WAIT:
 			// issue DISCON command
@@ -151,6 +151,8 @@ void W5500_ReadoutTCPSocketToStream(uint8_t socket_no){
 			W5500_WriteByte(W5500_S_CR, BSB_SOCKET_REG(socket_no), W5500_S_RECV);
 			// push temp_storage into byte stream
 			xStreamBufferSend(W5500CB.Sockets[socket_no].RXStreamHandle, temp_storage, s_rx_rsr, portMAX_DELAY);
+			// update stats
+			W5500CB.Sockets[socket_no].StatsRxBytes += s_rx_rsr;
 			// refresh s_rx_rsr
 			s_rx_rsr = W5500_ReadWord(W5500_S_RX_RSR0, BSB_SOCKET_REG(socket_no));
 		}
@@ -194,6 +196,8 @@ void W5500_WriteToSocket(uint8_t socket_no, uint8_t *source, uint16_t length){
 		W5500_WriteRegisters(s_tx_wr, BSB_SOCKET_TX(socket_no), length, source);
 		// advance s_tx_wr
 		s_tx_wr += length;
+		// update stats
+		W5500CB.Sockets[socket_no].StatsTxBytes += length;
 		W5500_WriteWord(W5500_S_TX_WR0, BSB_SOCKET_REG(socket_no), s_tx_wr);
 		// apply SEND command
 		W5500_WriteByte(W5500_S_CR, BSB_SOCKET_REG(socket_no), W5500_S_SEND);

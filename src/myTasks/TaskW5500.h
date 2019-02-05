@@ -50,7 +50,8 @@ typedef struct{
 	uint16_t 				PortNo;						// port number to open/connect to
 	eSocketState 			State;						// current state of the socket - as in Sn_SR register
 	StreamBufferHandle_t 	RXStreamHandle;				// handler of socket's output stream (RX from W5500)
-
+	uint32_t				StatsTxBytes;				// for statistics
+	uint32_t				StatsRxBytes;
 }sTCPSocketBlock;
 
 typedef enum{
