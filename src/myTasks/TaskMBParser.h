@@ -29,6 +29,9 @@ typedef struct{
 	StreamBufferHandle_t 	inputStream;
 	QueueHandle_t 			outputMessageQueue;
 	uint8_t					sourceSocketNo;
+	uint32_t				StatsOKResp;
+	uint32_t				StatsExcResp;
+	uint32_t				StatsErrors;
 }sParserInOutParameter;
 
 typedef enum{

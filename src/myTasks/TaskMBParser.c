@@ -18,6 +18,9 @@ void vTaskMBParser(void *pvParameters){
 	StreamBufferHandle_t inputStreamHandle = params->inputStream;
 	QueueHandle_t outputMessageQueueHandle = params->outputMessageQueue;
 	uint8_t sourceSocket = params->sourceSocketNo;
+	params->StatsErrors = 0;
+	params->StatsExcResp = 0;
+	params->StatsOKResp = 0;
 
 	while(1){
 		// start of frame - wait for MBAP (7bytes) + function code (1byte) = 8bytes
@@ -39,6 +42,7 @@ void vTaskMBParser(void *pvParameters){
 			reply.SocketNo = sourceSocket;
 			reply.MessageLength = 0;
 			reply.DataPointer = NULL;
+			params->StatsErrors++;
 			xQueueSend(outputMessageQueueHandle, &reply, pdMS_TO_TICKS(500));
 		}
 
@@ -71,6 +75,16 @@ void vTaskMBParser(void *pvParameters){
 		reply.SocketNo = sourceSocket;
 		reply.MessageLength = aduframe.MBAP.Length + 6;
 		reply.DataPointer = &aduframe;
+
+		// update stats
+		if(aduframe.PDU.FunctionCode&0b1000000){
+			// exception response
+			params->StatsExcResp++;
+		}else{
+			// normal response
+			params->StatsOKResp++;
+		}
+
 		// before sending, swap bytes in word fields
 		aduframe.MBAP.Length = BYTES_IN_WORD_SWAP(aduframe.MBAP.Length);
 		//aduframe.MBAP.TransID = BYTES_IN_WORD_SWAP(aduframe.MBAP.TransID);	// as before, do not deal with it, just resend as received
