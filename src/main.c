@@ -37,6 +37,7 @@ int main(void)
 	memcpy(W5500Conf.Gateway, gateway, sizeof(gateway));
 	memcpy(W5500Conf.Subnet, subnet, sizeof(subnet));
 	memcpy(W5500Conf.MAC, mac, sizeof(mac));
+	W5500Conf.UseDHCP = 1;
 
 	// prepare streams and message queue
 	StreamBufferHandle_t socket0stream = xStreamBufferCreate(SOCKET_RXBUFFER_LEN, 5);

@@ -29,6 +29,7 @@ typedef enum{
 	SOCKET_LISTEN			= 0x14,
 	SOCKET_ESTABLISHED		= 0x17,
 	SOCKET_CLOSE_WAIT		= 0x1C,
+	SOCKET_UDP				= 0x22,
 	SOCKET_UNKNOWN_STATE	= 0xFF
 }eSocketState;
 
@@ -65,6 +66,7 @@ typedef struct{
 	uint8_t 			Gateway[4];
 	uint8_t 			Subnet[4];
 	uint8_t 			MAC[6];
+	uint8_t				UseDHCP;
 	uint16_t			ModbusPortNo;
 }sW5500Config;
 
@@ -102,6 +104,7 @@ void W5500_ReadoutTCPSocketToStream(uint8_t socket_no);
 void W5500_WriteToSocket(uint8_t socket_no, uint8_t *source, uint16_t length);
 void W5500_ProcessControlMessages();
 void W5500_SetupTCPSocket(sTCPSocketBlock* socket, uint8_t socket_no, uint16_t port_no);
-uint8_t W5500_Init(sW5500Config *config);
+sW5500Config W5500_Init(sW5500Config *config);
+sW5500Config W5500_DHCPRequest();
 
 #endif /* MYTASKS_TASKW5500_H_ */

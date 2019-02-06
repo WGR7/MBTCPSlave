@@ -26,12 +26,27 @@ uint8_t W5500_Init(sW5500Config *config){
 		// 3. Send IP config values
 		// 3.a Send MAC
 		W5500_WriteRegisters(W5500_SHAR0, COMMON_REGISTER, 6, config->MAC);
+
+		// here, if static IP - continue below, if DHCP - fetch info from DHCP and use these values instead
+		sW5500Config *config_to_use;
+		config_to_use = config;
+		sW5500Config dhcp_conf;
+
+		if(config->UseDHCP){
+			dhcp_conf = W5500_DHCPRequest();
+			if(dhcp_conf.UseDHCP){
+				// DHCP request sucessfull
+				config_to_use = &dhcp_conf;
+			}
+		}
+
 		// 3.b Send subnet mask
-		W5500_WriteRegisters(W5500_SUBR0, COMMON_REGISTER, 4, config->Subnet);
+		W5500_WriteRegisters(W5500_SUBR0, COMMON_REGISTER, 4, config_to_use->Subnet);
 		// 3.c Send gateway
-		W5500_WriteRegisters(W5500_GAR0, COMMON_REGISTER, 4, config->Gateway);
+		W5500_WriteRegisters(W5500_GAR0, COMMON_REGISTER, 4, config_to_use->Gateway);
 		// 3.d Send IP
-		W5500_WriteRegisters(W5500_SIPR0, COMMON_REGISTER, 4, config->IP);
+		W5500_WriteRegisters(W5500_SIPR0, COMMON_REGISTER, 4, config_to_use->IP);
+
 		// 3. Set PHY config and assert SW reset
 		//uint8_t phycfgbyte = 0b01111000;
 		//W5500_WriteRegisters(W5500_PHYCFGR, COMMON_REGISTER, 1, &phycfgbyte);
@@ -202,4 +217,42 @@ void W5500_WriteToSocket(uint8_t socket_no, uint8_t *source, uint16_t length){
 		// apply SEND command
 		W5500_WriteByte(W5500_S_CR, BSB_SOCKET_REG(socket_no), W5500_S_SEND);
 	}
+}
+
+sW5500Config W5500_DHCPRequest(sW5500Config *current_config){
+	// Lets use socket0
+
+	// setup socket mode UDP - S0_MR
+	W5500_WriteByte(W5500_S_MR, BSB_SOCKET_REG(0), (0b11100000 | W5500_SOCKET_P_UDP));
+	// setup S0_PORT source port = 68
+	W5500_WriteWord(W5500_S_PORT0, BSB_SOCKET_REG(0), 68);
+	// setup S0_DPORT dest. port = 67
+	W5500_WriteWord(W5500_S_DPORT0, BSB_SOCKET_REG(0), 67);
+	// setup S0_DHAR destination mac = 0x ff ff ff ff ff ff (broadcast)
+	uint8_t broadcast_mac[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+	W5500_WriteRegisters(W5500_S_DHAR0, BSB_SOCKET_REG(0), 6, broadcast_mac);
+	// setup S0_DIPR destination ip = 255.255.255.255
+	uint8_t broadcast_ip[] = {255, 255, 255, 255};
+	W5500_WriteRegisters(W5500_S_DIPR0, BSB_SOCKET_REG(0), 4, broadcast_ip);
+	// issue OPEN command
+	W5500_WriteByte(W5500_S_CR, BSB_SOCKET_REG(0), W5500_S_OPEN);
+	// wait till S0_SR = SOCK_UDP
+	while((eSocketState)W5500_ReadByte(W5500_S_SR, BSB_SOCKET_REG(0)) != SOCKET_UDP){
+		vTaskDelay(pdMS_TO_TICKS(10));
+	}
+	// assemble a DHCPDISCOVER frame
+uint8_t dhcpdiscover[] = {		0x01, 	0x01, 	0x06, 	0x00,
+								0x00,	0x01,	0x02,	0x03,
+								0x00,	0x00
+};
+
+
+	// send that frame to socket0 TX buffer
+	// issue SEND_MAC command
+	// wait till S0_Rx_RSR >= some minimal DHCPOFFER frame length
+	// fetch socket0 RX buffer to some temporary buffer
+	// issue RECV command
+	// analyze and extract ip info
+	// close socket
+	// return ip info
 }
