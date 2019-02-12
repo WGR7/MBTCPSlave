@@ -243,7 +243,13 @@ sW5500Config W5500_DHCPRequest(sW5500Config *current_config){
 	// assemble a DHCPDISCOVER frame
 uint8_t dhcpdiscover[] = {		0x01, 	0x01, 	0x06, 	0x00,
 								0x00,	0x01,	0x02,	0x03,
-								0x00,	0x00
+								0x00,	0x00,	0x80,	0x00,
+								0,		0,		0,		0,
+								0,		0,		0,		0,
+								0,		0,		0,		0,
+								0,		0,		0,		0,
+								current_config->MAC[0], current_config->MAC[1], current_config->MAC[2], current_config->MAC[3], current_config->MAC[4], current_config->MAC[5],
+
 };
 
 
