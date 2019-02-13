@@ -1,6 +1,6 @@
 
 /* Includes */
-#include <_TaskSPITxRx.h>
+//#include <_TaskSPITxRx.h>
 #include <stddef.h>
 #include "stm32f10x.h"
 #include "custom_init.h"
@@ -8,16 +8,29 @@
 #include "stm32f1xx_it.h"
 #include "string.h"
 
+/*
 #include "FreeRTOS.h"
 #include "task.h"
 #include "stream_buffer.h"
 #include "TaskW5500.h"
 #include "TaskMBParser.h"
+*/
+
+#include "w5500_spi.h"
+
+// Wiznet stuff
+#define _WIZCHIP_					W5500
+#define _WIZCHIP_IO_MODE_           _WIZCHIP_IO_MODE_SPI_
+#define _WIZCHIP_IO_BUS_WIDTH_		8
+
+#include "wizchip_conf.h"
+_WIZCHIP  WIZCHIP;
 
 static void vTaskAlive(void *pvParameters);
 //static void vTaskSPITxRx(void *pvParameters);
 
 //extern sW5500Config W5500Conf;
+
 
 int main(void)
 {
@@ -28,6 +41,16 @@ int main(void)
 	// relevant for freertos
 	NVIC_PriorityGroupConfig( NVIC_PriorityGroup_4 );
 
+	reg_wizchip_cris_cbfunc(NULL, NULL);
+	reg_wizchip_cs_cbfunc(W5500_IF_Select, W5500_IF_DeSelect);
+	// provide read/write functions both byte-wise and burst
+	reg_wizchip_spiburst_cbfunc(W5500_IF_ReadBurst, W5500_IF_WriteBurst);
+	reg_wizchip_spi_cbfunc(W5500_IF_ReadByte, W5500_IF_WriteByte);
+
+	uint8_t version=0;
+	version = getVERSIONR();
+
+	/*
 	// prepare IP config
 	uint8_t ipaddr[] 	= {192, 168, 1, 40};
 	uint8_t gateway[] 	= {192, 168, 1, 1};
@@ -65,6 +88,7 @@ int main(void)
 	xTaskCreate(vTaskMBParser, (const char*)"MBp", configMINIMAL_STACK_SIZE+sizeof(sADUFrame), &parser0params, 3, NULL);
 
 	vTaskStartScheduler();
+*/
 
   /* TODO - Add your application code here */
 
@@ -77,6 +101,7 @@ int main(void)
 
 
 //extern StreamBufferHandle_t SPIWriteStreamHandle;
+/*
 static void vTaskAlive( void *pvParameters ){
 	while(1){
 		GPIO_SetBits(GPIOA, GPIO_Pin_5);
@@ -87,7 +112,7 @@ static void vTaskAlive( void *pvParameters ){
 		xStreamBufferSend(SPIWriteStreamHandle, &rdbuff, 3, pdMS_TO_TICKS(10));
 	}
 }
-
+*/
 void vApplicationStackOverflowHook( TaskHandle_t xTask, char *pcTaskName ){
 	while(1){}
 }

@@ -104,7 +104,7 @@ void W5500_ReadoutTCPSocketToStream(uint8_t socket_no);
 void W5500_WriteToSocket(uint8_t socket_no, uint8_t *source, uint16_t length);
 void W5500_ProcessControlMessages();
 void W5500_SetupTCPSocket(sTCPSocketBlock* socket, uint8_t socket_no, uint16_t port_no);
-sW5500Config W5500_Init(sW5500Config *config);
+uint8_t W5500_Init(sW5500Config *config);
 sW5500Config W5500_DHCPRequest();
 
 #endif /* MYTASKS_TASKW5500_H_ */

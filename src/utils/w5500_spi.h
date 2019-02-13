@@ -34,4 +34,12 @@ void W5500_WriteByte(uint16_t reg_offset, uint8_t block_no, uint8_t value);
 void W5500_WriteWord(uint16_t reg_offset, uint8_t block_no, uint16_t value);
 void W5500_SerializeHeader(tDataFrameHeader header, uint8_t *dest);
 
+// helper functions just to binding it to WiznetIOLibrary
+void W5500_IF_Select();
+void W5500_IF_DeSelect();
+uint8_t	W5500_IF_ReadByte();
+void W5500_IF_WriteByte(uint8_t);
+void W5500_IF_ReadBurst(uint8_t *pBuff, uint16_t len);
+void W5500_IF_WriteBurst(uint8_t *pBuff, uint16_t len);
+
 #endif /* UTILS_W5500_SPI_H_ */

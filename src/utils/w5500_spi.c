@@ -140,3 +140,63 @@ void W5500_SerializeHeader(tDataFrameHeader header, uint8_t *dest){
 	dest[1] = (uint8_t)(header.AddressPhase&0xFF);
 	dest[2] = (uint8_t)(header.BSB | header.RWMode | header.OpMode);
 }
+
+
+void W5500_IF_Select(){
+	W5500_SELECT;
+}
+
+void W5500_IF_DeSelect(){
+	while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET){}
+	while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_BSY) == SET){}
+	W5500_DESELECT;
+}
+
+uint8_t	W5500_IF_ReadByte(){
+	while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET){}
+	// transmit data (=0)
+	SPI_I2S_SendData(SPI1, 0x00);
+	while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE)==RESET){}
+	return SPI_I2S_ReceiveData(SPI1);
+}
+
+void W5500_IF_WriteByte(uint8_t byte){
+	while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET){}
+	// transmit data
+	SPI_I2S_SendData(SPI1, byte);
+}
+
+void W5500_IF_ReadBurst(uint8_t *pBuff, uint16_t len){
+	// write first data (data = 0's)
+	while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET){}
+	SPI_I2S_SendData(SPI1, 0x00);
+	for(;len>1;len--){
+		// write next data
+		while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET){}
+		SPI_I2S_SendData(SPI1, 0x00);
+		// wait for and read rx data
+		while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE)==RESET){}
+		*pBuff++ = SPI_I2S_ReceiveData(SPI1);
+	}
+	// wait for and read last rx data
+	while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE)==RESET){}
+	*pBuff++ = SPI_I2S_ReceiveData(SPI1);
+
+}
+
+void W5500_IF_WriteBurst(uint8_t *pBuff, uint16_t len){
+	// tx first byte
+	while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET){}
+	SPI_I2S_SendData(SPI1, *pBuff++);
+	for(;len>1;len--){
+		// write next data
+		while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET){}
+		SPI_I2S_SendData(SPI1, *pBuff++);
+		// wait for and read rx data just to clear RX buffer
+		while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE)==RESET){}
+		SPI_I2S_ReceiveData(SPI1);
+	}
+	// wait for and read last rx data
+	while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE)==RESET){}
+	SPI_I2S_ReceiveData(SPI1);
+}
