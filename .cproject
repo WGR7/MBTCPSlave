@@ -38,6 +38,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Wiznet/Ethernet/W5500}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Wiznet/Ethernet}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Wiznet/Ethernet/tmp}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Wiznet/Internet/DHCP}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Wiznet/Ethernet/Common}&quot;"/>
 								</option>
 								<inputType id="com.atollic.truestudio.as.input.344232350" name="Input" superClass="com.atollic.truestudio.as.input"/>
 							</tool>
@@ -58,6 +60,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Wiznet/Ethernet/W5500}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Wiznet/Ethernet}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Wiznet/Ethernet/tmp}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Wiznet/Internet/DHCP}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Wiznet/Ethernet/Common}&quot;"/>
 								</option>
 								<option id="com.atollic.truestudio.common_options.target.endianess.777927300" name="Endianess" superClass="com.atollic.truestudio.common_options.target.endianess" useByScannerDiscovery="false"/>
 								<option id="com.atollic.truestudio.common_options.target.mcpu.2045978621" name="Microcontroller" superClass="com.atollic.truestudio.common_options.target.mcpu" useByScannerDiscovery="false" value="STM32F103RB" valueType="enumerated"/>
@@ -115,6 +119,20 @@
 							<tool id="com.atollic.truestudio.exe.debug.toolchain.secoutput.484969180" name="Other" superClass="com.atollic.truestudio.exe.debug.toolchain.secoutput"/>
 						</toolChain>
 					</folderInfo>
+					<folderInfo id="com.atollic.truestudio.exe.debug.2016428914.1852466631" name="/" resourcePath="Wiznet/Ethernet/Common">
+						<toolChain id="com.atollic.truestudio.exe.debug.toolchain.907844912" name="Atollic ARM Tools" superClass="com.atollic.truestudio.exe.debug.toolchain" unusedChildren="">
+							<option id="com.atollic.truestudio.general.runtimelib.1047934125.1044125323" name="Runtime Library" superClass="com.atollic.truestudio.general.runtimelib.1047934125"/>
+							<option id="com.atollic.truestudio.toolchain_options.mcu.1509625230.1740164794" name="Microcontroller" superClass="com.atollic.truestudio.toolchain_options.mcu.1509625230"/>
+							<option id="com.atollic.truestudio.toolchain_options.vendor.313324962.509150182" name="Vendor name" superClass="com.atollic.truestudio.toolchain_options.vendor.313324962"/>
+							<tool id="com.atollic.truestudio.exe.debug.toolchain.as.384043225" name="Assembler" superClass="com.atollic.truestudio.exe.debug.toolchain.as.99475197"/>
+							<tool id="com.atollic.truestudio.exe.debug.toolchain.gcc.1897677509" name="C Compiler" superClass="com.atollic.truestudio.exe.debug.toolchain.gcc.685711990"/>
+							<tool id="com.atollic.truestudio.exe.debug.toolchain.ld.2026413002" name="C Linker" superClass="com.atollic.truestudio.exe.debug.toolchain.ld.431244260"/>
+							<tool id="com.atollic.truestudio.exe.debug.toolchain.gpp.53497867" name="C++ Compiler" superClass="com.atollic.truestudio.exe.debug.toolchain.gpp.94875283"/>
+							<tool id="com.atollic.truestudio.exe.debug.toolchain.ldcc.1474259160" name="C++ Linker" superClass="com.atollic.truestudio.exe.debug.toolchain.ldcc.624640515"/>
+							<tool id="com.atollic.truestudio.ar.base.1685866116" name="Archiver" superClass="com.atollic.truestudio.ar.base.1882130354"/>
+							<tool id="com.atollic.truestudio.exe.debug.toolchain.secoutput.99210198" name="Other" superClass="com.atollic.truestudio.exe.debug.toolchain.secoutput.484969180"/>
+						</toolChain>
+					</folderInfo>
 					<folderInfo id="com.atollic.truestudio.exe.debug.2016428914.660633785" name="/" resourcePath="src/utils">
 						<toolChain id="com.atollic.truestudio.exe.debug.toolchain.88289138" name="Atollic ARM Tools" superClass="com.atollic.truestudio.exe.debug.toolchain" unusedChildren="">
 							<option id="com.atollic.truestudio.general.runtimelib.1047934125.1249253365" name="Runtime Library" superClass="com.atollic.truestudio.general.runtimelib.1047934125"/>
@@ -146,8 +164,9 @@
 					</folderInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Libraries"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Wiznet/Ethernet/Common"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Wiznet/Ethernet/W5500"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Wiznet/Ethernet/tmp"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Wiznet/Internet/DHCP"/>
 						<entry excluding="freertos/MemMang/heap_5.c|freertos/MemMang/heap_4.c|freertos/MemMang/heap_3.c|freertos/MemMang/heap_2.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
@@ -191,6 +210,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Wiznet/Ethernet/W5500}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Wiznet/Ethernet}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Wiznet/Ethernet/tmp}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Wiznet/Internet/DHCP}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Wiznet/Ethernet/Common}&quot;"/>
 								</option>
 								<inputType id="com.atollic.truestudio.as.input.463131400" name="Input" superClass="com.atollic.truestudio.as.input"/>
 							</tool>
@@ -207,6 +228,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Wiznet/Ethernet/W5500}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Wiznet/Ethernet}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Wiznet/Ethernet/tmp}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Wiznet/Internet/DHCP}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Wiznet/Ethernet/Common}&quot;"/>
 								</option>
 								<option id="com.atollic.truestudio.common_options.target.endianess.167701131" name="Endianess" superClass="com.atollic.truestudio.common_options.target.endianess"/>
 								<option id="com.atollic.truestudio.common_options.target.mcpu.2142865823" name="Microcontroller" superClass="com.atollic.truestudio.common_options.target.mcpu" value="STM32F103RB" valueType="enumerated"/>
