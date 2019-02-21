@@ -15,15 +15,21 @@ void vTaskDHCPClient(void *pvParameters){
 	uint8_t current_ip[]={0,0,0,0};
 	DHCP_init(DHCP_SOCKET_NO, workingbuffer);
 
+	uint8_t counter=0;
 	while(1){
-
-		for(uint8_t counter=0;counter<9;counter++){
-			state = DHCP_run();
-			vTaskDelay(pdMS_TO_TICKS(100));
+		state = DHCP_run();
+		counter++;
+		if(counter>=10){
+			counter=0;
+			DHCP_time_handler();
 		}
-		//vTaskDelay(pdMS_TO_TICKS(1000));
-		DHCP_time_handler();
+		vTaskDelay(pdMS_TO_TICKS(100));
+
 		getIPfromDHCP(current_ip);
+		if(current_ip[0]!=0){
+			uint8_t dummy=0;
+			dummy++;
+		}
 	}
 
 }

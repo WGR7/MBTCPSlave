@@ -16,6 +16,7 @@
 #include "TaskMBParser.h"
 */
 #include "TaskDHCPClient.h"
+#include "TaskTCP_CLIServer.h"
 
 #include "w5500_spi.h"
 
@@ -89,6 +90,11 @@ int main(void)
 	xTaskCreate(vTaskMBParser, (const char*)"MBp", configMINIMAL_STACK_SIZE+sizeof(sADUFrame), &parser0params, 3, NULL);
 */
 	xTaskCreate(vTaskDHCPClient, (const char*)"dhcpc", configMINIMAL_STACK_SIZE, NULL, 6, NULL);
+
+	sCLIConfig cliconf;
+	cliconf.PortNumber = 1234;
+	cliconf.SocketNumber = 6;
+	xTaskCreate(TaskTCP_CLIServer, (const char*)"cli", configMINIMAL_STACK_SIZE, (void*)&cliconf, 5, NULL);
 	vTaskStartScheduler();
 
 

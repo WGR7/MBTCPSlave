@@ -115,5 +115,8 @@ See http://www.FreeRTOS.org/RTOS-Cortex-M3-M4.html. */
 #define xPortPendSVHandler PendSV_Handler
 #define xPortSysTickHandler SysTick_Handler
 
+// CLI interface
+#define configCOMMAND_INT_MAX_OUTPUT_SIZE 50
+
 #endif /* FREERTOS_CONFIG_H */
 
