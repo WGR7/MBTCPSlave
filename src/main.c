@@ -94,7 +94,7 @@ int main(void)
 	sCLIConfig cliconf;
 	cliconf.PortNumber = 1234;
 	cliconf.SocketNumber = 6;
-	xTaskCreate(TaskTCP_CLIServer, (const char*)"cli", configMINIMAL_STACK_SIZE, (void*)&cliconf, 5, NULL);
+	xTaskCreate(vTaskTCP_CLIServer, (const char*)"cli", configMINIMAL_STACK_SIZE, (void*)&cliconf, 5, NULL);
 	vTaskStartScheduler();
 
 
