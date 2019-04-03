@@ -13,7 +13,7 @@ uint8_t workingbuffer[550];
 void vTaskDHCPClient(void *pvParameters){
 	uint8_t state=0;
 	uint8_t current_ip[]={0,0,0,0};
-	DHCP_init(DHCP_SOCKET_NO, workingbuffer);
+	DHCP_init(SOCKETNO_DHCP, workingbuffer);
 
 	uint8_t counter=0;
 	while(1){

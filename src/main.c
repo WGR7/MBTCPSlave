@@ -15,8 +15,10 @@
 #include "TaskW5500.h"
 #include "TaskMBParser.h"
 */
+#include "app_config.h"
 #include "TaskDHCPClient.h"
 #include "TaskTCP_CLIServer.h"
+#include "TaskDiscoveryServer.h"
 
 #include "w5500_spi.h"
 
@@ -89,12 +91,19 @@ int main(void)
 	xTaskCreate(vTaskW5500, (const char*)"w5500", configMINIMAL_STACK_SIZE, NULL, 4, NULL);
 	xTaskCreate(vTaskMBParser, (const char*)"MBp", configMINIMAL_STACK_SIZE+sizeof(sADUFrame), &parser0params, 3, NULL);
 */
-	xTaskCreate(vTaskDHCPClient, (const char*)"dhcpc", configMINIMAL_STACK_SIZE, NULL, 6, NULL);
+	xTaskCreate(vTaskDHCPClient, (const char*)"dhcpc", 2*configMINIMAL_STACK_SIZE, NULL, 6, NULL);
 
 	sCLIConfig cliconf;
-	cliconf.PortNumber = 1234;
-	cliconf.SocketNumber = 6;
-	xTaskCreate(vTaskTCP_CLIServer, (const char*)"cli", configMINIMAL_STACK_SIZE, (void*)&cliconf, 5, NULL);
+	cliconf.PortNumber = PORTNO_CLI;
+	cliconf.SocketNumber = SOCKETNO_CLI;
+	//xTaskCreate(vTaskTCP_CLIServer, (const char*)"cli", configMINIMAL_STACK_SIZE, (void*)&cliconf, 5, NULL);
+
+
+	sDiscoveryConfig discoveryconf;
+	discoveryconf.PortNumber = PORTNO_DISCOVERY;
+	discoveryconf.SocketNumber = SOCKETNO_DISCOVERY;
+	xTaskCreate(vTaskDiscoveryServer, (const char*)"dis", 150, (void*)&discoveryconf, 7, NULL);
+
 	vTaskStartScheduler();
 
 

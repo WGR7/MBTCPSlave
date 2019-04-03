@@ -10,10 +10,15 @@
 
 #include "stdlib.h"
 #include "FreeRTOS.h"
-//#include "string.h"
+#include "string.h"
 #include "task.h"
+#include "socket.h"
+#include "w5500.h"
 
-#define DISCOVERY_SOCKET_NO		5
+
+#define DISCOVERY_INPUT_BUFF_LEN	30
+
+
 
 typedef struct{
 	uint8_t		SocketNumber;
