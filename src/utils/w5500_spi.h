@@ -12,7 +12,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "w5500_spiregisters.h"
-
+#include "semphr.h"
 
 #define W5500_SELECT 	GPIO_ResetBits(GPIOC, GPIO_Pin_0);
 #define W5500_DESELECT 	GPIO_SetBits(GPIOC, GPIO_Pin_0);
@@ -37,6 +37,8 @@ void W5500_SerializeHeader(tDataFrameHeader header, uint8_t *dest);
 // helper functions just to binding it to WiznetIOLibrary
 void W5500_IF_Select();
 void W5500_IF_DeSelect();
+void W5500_IF_SelectMUTEX(SemaphoreHandle_t spi_mutex);
+void W5500_IF_DeSelectMUTEX(SemaphoreHandle_t spi_mutex);
 uint8_t	W5500_IF_ReadByte();
 void W5500_IF_WriteByte(uint8_t);
 void W5500_IF_ReadBurst(uint8_t *pBuff, uint16_t len);

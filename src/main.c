@@ -8,33 +8,34 @@
 #include "stm32f1xx_it.h"
 #include "string.h"
 
-/*
+// freeRTOS stuff
 #include "FreeRTOS.h"
-#include "task.h"
-#include "stream_buffer.h"
-#include "TaskW5500.h"
-#include "TaskMBParser.h"
-*/
+#include "queue.h"
+#include "semphr.h"
+
+// app specific stuff
 #include "app_config.h"
 #include "TaskDHCPClient.h"
 #include "TaskTCP_CLIServer.h"
 #include "TaskDiscoveryServer.h"
-
 #include "w5500_spi.h"
-
 // Wiznet stuff
 #define _WIZCHIP_					W5500
 #define _WIZCHIP_IO_MODE_           _WIZCHIP_IO_MODE_SPI_
 #define _WIZCHIP_IO_BUS_WIDTH_		8
-
 #include "wizchip_conf.h"
 _WIZCHIP  WIZCHIP;
+
+
 
 static void vTaskAlive(void *pvParameters);
 //static void vTaskSPITxRx(void *pvParameters);
 
 //extern sW5500Config W5500Conf;
 
+
+// MUTEX for SPI access
+SemaphoreHandle_t SPI_Mutex;
 
 int main(void)
 {
@@ -45,6 +46,7 @@ int main(void)
 	// relevant for freertos
 	NVIC_PriorityGroupConfig( NVIC_PriorityGroup_4 );
 
+	// WiznetIO lib config
 	reg_wizchip_cris_cbfunc(NULL, NULL);
 	reg_wizchip_cs_cbfunc(W5500_IF_Select, W5500_IF_DeSelect);
 	// provide read/write functions both byte-wise and burst
@@ -91,6 +93,9 @@ int main(void)
 	xTaskCreate(vTaskW5500, (const char*)"w5500", configMINIMAL_STACK_SIZE, NULL, 4, NULL);
 	xTaskCreate(vTaskMBParser, (const char*)"MBp", configMINIMAL_STACK_SIZE+sizeof(sADUFrame), &parser0params, 3, NULL);
 */
+	// Create semaphore for SPI access
+	SPI_Mutex = xSemaphoreCreateMutex();
+
 	xTaskCreate(vTaskDHCPClient, (const char*)"dhcpc", 2*configMINIMAL_STACK_SIZE, NULL, 6, NULL);
 
 	sCLIConfig cliconf;

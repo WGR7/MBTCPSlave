@@ -152,6 +152,19 @@ void W5500_IF_DeSelect(){
 	W5500_DESELECT;
 }
 
+void W5500_IF_SelectMUTEX(SemaphoreHandle_t spi_mutex){
+	if(xSemaphoreTake(spi_mutex, pdMS_TO_TICKS(1000)) == pdTRUE){
+		W5500_SELECT;
+	}
+}
+
+void W5500_IF_DeSelectMUTEX(SemaphoreHandle_t spi_mutex){
+	while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET){}
+	while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_BSY) == SET){}
+	W5500_DESELECT;
+	xSemaphoreGive(spi_mutex);
+}
+
 uint8_t	W5500_IF_ReadByte(){
 	while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET){}
 	// transmit data (=0)

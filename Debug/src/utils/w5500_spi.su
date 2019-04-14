@@ -7,7 +7,9 @@ w5500_spi.c:133:6:W5500_WriteWord	24	static
 w5500_spi.c:138:6:W5500_SerializeHeader	24	static
 w5500_spi.c:145:6:W5500_IF_Select	8	static
 w5500_spi.c:149:6:W5500_IF_DeSelect	8	static
-w5500_spi.c:155:9:W5500_IF_ReadByte	8	static
-w5500_spi.c:163:6:W5500_IF_WriteByte	16	static
-w5500_spi.c:169:6:W5500_IF_ReadBurst	24	static
-w5500_spi.c:187:6:W5500_IF_WriteBurst	16	static
+w5500_spi.c:155:6:W5500_IF_SelectMUTEX	16	static
+w5500_spi.c:161:6:W5500_IF_DeSelectMUTEX	16	static
+w5500_spi.c:168:9:W5500_IF_ReadByte	8	static
+w5500_spi.c:176:6:W5500_IF_WriteByte	16	static
+w5500_spi.c:182:6:W5500_IF_ReadBurst	24	static
+w5500_spi.c:200:6:W5500_IF_WriteBurst	16	static
