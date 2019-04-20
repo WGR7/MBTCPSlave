@@ -3,4 +3,4 @@ core_cm3.h:1139:26:SysTick_Config	16	static
 custom_init.c:19:6:CustomInit	8	static
 custom_init.c:54:6:CustomClockConfigHSI64	8	static
 custom_init.c:71:6:CustomSPIConfig	32	static
-custom_init.c:126:6:CustomGPIOConfig	4	static
+custom_init.c:145:6:CustomGPIOConfig	4	static

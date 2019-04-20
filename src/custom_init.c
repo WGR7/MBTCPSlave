@@ -73,8 +73,11 @@ void CustomSPIConfig(void){
 	// PA_5 - SCK
 	// PA_6 - MISO
 	// PA_7 - MOSI
-	// PC_0 - CS
-	// PC_1 - RESET
+	// PC_0 - CS for Wiznet
+	// PC_1 - RESET for Wiznet
+	// PC_2 - CS for SSD1306
+	// PC_3 - RESET for SSD1306
+	// PA_15 - Data/Command for SSD1306
 	// CPOL=1, CPHA=1
 	// 8bit frame
 
@@ -97,14 +100,30 @@ void CustomSPIConfig(void){
 	// Initially set SCK to starting state (HIGH)
 	GPIO_SetBits(GPIOA, GPIO_Pin_5);
 
-	// Configure PC0 and PC1 as output 50MHz push-pull
-	pins.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1;
+	// Configure PC0, PC1, PC2, PC4 as output 50MHz push-pull
+	pins.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3;
 	pins.GPIO_Speed = GPIO_Speed_50MHz;
 	pins.GPIO_Mode = GPIO_Mode_Out_PP;
 	GPIO_Init(GPIOC, &pins);
 	// Initially set to HIGH - chip not selected, no reset
 	GPIO_SetBits(GPIOC, GPIO_Pin_0);
 	GPIO_SetBits(GPIOC, GPIO_Pin_1);
+	GPIO_SetBits(GPIOC, GPIO_Pin_2);
+	GPIO_SetBits(GPIOC, GPIO_Pin_3);
+	GPIO_SetBits(GPIOC, GPIO_Pin_15);
+
+	// Configure PA0 as output 50MHz push-pull
+	pins.GPIO_Pin = GPIO_Pin_0;
+	pins.GPIO_Speed = GPIO_Speed_50MHz;
+	pins.GPIO_Mode = GPIO_Mode_Out_PP;
+	GPIO_Init(GPIOA, &pins);
+
+	// Initially set to HIGH - chip not selected, no reset
+	GPIO_SetBits(GPIOC, GPIO_Pin_0);
+	GPIO_SetBits(GPIOC, GPIO_Pin_1);
+	GPIO_SetBits(GPIOC, GPIO_Pin_2);
+	GPIO_SetBits(GPIOC, GPIO_Pin_3);
+	GPIO_SetBits(GPIOA, GPIO_Pin_0);
 
 	// Configure SPI baudrate - PCLK2(64MHz) /32 = 2MHz
 	SPI_InitTypeDef spiconf;

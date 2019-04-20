@@ -19,6 +19,9 @@
 #include "TaskTCP_CLIServer.h"
 #include "TaskDiscoveryServer.h"
 #include "w5500_spi.h"
+#include "ssd1306.h"
+#include "ssd1306_port_f103.h".h"
+#include "TaskSSD1306.h"
 // Wiznet stuff
 #define _WIZCHIP_					W5500
 #define _WIZCHIP_IO_MODE_           _WIZCHIP_IO_MODE_SPI_
@@ -33,6 +36,8 @@ static void vTaskAlive(void *pvParameters);
 
 //extern sW5500Config W5500Conf;
 
+// Display structure
+static sSSDdisplay display;
 
 // MUTEX for SPI access
 SemaphoreHandle_t SPI_Mutex;
@@ -96,7 +101,11 @@ int main(void)
 	// Create semaphore for SPI access
 	SPI_Mutex = xSemaphoreCreateMutex();
 
-	xTaskCreate(vTaskDHCPClient, (const char*)"dhcpc", 2*configMINIMAL_STACK_SIZE, NULL, 6, NULL);
+	// Display control stuff
+	SSD1306InitStruct(&display, &SSDSelectChip, &SSDDeSelectChip, &SSDSetDataMode, &SSDSetCommandMode, &SSDSendByte, &SSDResetActive, &SSDResetInactive, &SSDDelay);
+	xTaskCreate(vTaskSSD1306, (const char*)"ssd", configMINIMAL_STACK_SIZE, (void*)&display, 8, NULL);
+
+	//xTaskCreate(vTaskDHCPClient, (const char*)"dhcpc", 2*configMINIMAL_STACK_SIZE, NULL, 6, NULL);
 
 	sCLIConfig cliconf;
 	cliconf.PortNumber = PORTNO_CLI;
@@ -107,7 +116,7 @@ int main(void)
 	sDiscoveryConfig discoveryconf;
 	discoveryconf.PortNumber = PORTNO_DISCOVERY;
 	discoveryconf.SocketNumber = SOCKETNO_DISCOVERY;
-	xTaskCreate(vTaskDiscoveryServer, (const char*)"dis", 150, (void*)&discoveryconf, 7, NULL);
+	//xTaskCreate(vTaskDiscoveryServer, (const char*)"dis", 150, (void*)&discoveryconf, 7, NULL);
 
 	vTaskStartScheduler();
 
