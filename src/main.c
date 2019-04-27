@@ -20,7 +20,7 @@
 #include "TaskDiscoveryServer.h"
 #include "w5500_spi.h"
 #include "ssd1306.h"
-#include "ssd1306_port_f103.h".h"
+#include "ssd1306_port_f103.h"
 #include "TaskSSD1306.h"
 // Wiznet stuff
 #define _WIZCHIP_					W5500
@@ -102,8 +102,12 @@ int main(void)
 	SPI_Mutex = xSemaphoreCreateMutex();
 
 	// Display control stuff
-	SSD1306InitStruct(&display, &SSDSelectChip, &SSDDeSelectChip, &SSDSetDataMode, &SSDSetCommandMode, &SSDSendByte, &SSDResetActive, &SSDResetInactive, &SSDDelay);
+
+	SSDDMAConfig(display.PixBuffer, SSD1306_PIXELS_X * SSD1306_PAGES);
+	SSD1306InitStruct(&display, &SSDSelectChip, &SSDDeSelectChip, &SSDSetDataMode, &SSDSetCommandMode, &SSDSendByte, &SSDSendDMA, &SSDResetActive, &SSDResetInactive, &SSDDelay);
 	xTaskCreate(vTaskSSD1306, (const char*)"ssd", configMINIMAL_STACK_SIZE, (void*)&display, 8, NULL);
+
+
 
 	//xTaskCreate(vTaskDHCPClient, (const char*)"dhcpc", 2*configMINIMAL_STACK_SIZE, NULL, 6, NULL);
 

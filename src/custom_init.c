@@ -21,6 +21,9 @@ void CustomInit(void){
 	//CustomGPIOConfig();
 	CustomSPIConfig();
 
+	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
+
+
 	// Nucleo LD2 user led config - PA5 (GPIOA @APB2)
 	/* PA5 will be used for SPI1 SCK!
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
