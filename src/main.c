@@ -7,6 +7,7 @@
 #include "stm32f10x_rcc.h"
 #include "stm32f1xx_it.h"
 #include "string.h"
+#include <stdio.h>
 
 // freeRTOS stuff
 #include "FreeRTOS.h"
@@ -37,7 +38,7 @@ static void vTaskAlive(void *pvParameters);
 //extern sW5500Config W5500Conf;
 
 // Display structure
-static sSSDdisplay display;
+sSSDdisplay display;
 
 // MUTEX for SPI access
 SemaphoreHandle_t SPI_Mutex;
@@ -60,6 +61,11 @@ int main(void)
 
 	uint8_t version=0;
 	version = getVERSIONR();
+
+	// fprintf test
+	FILE teststream;
+	fprintf(&teststream, "dupa1\ndupa2");
+
 
 	/*
 	// prepare IP config
@@ -103,9 +109,9 @@ int main(void)
 
 	// Display control stuff
 
-	SSDDMAConfig(display.PixBuffer, SSD1306_PIXELS_X * SSD1306_PAGES);
+	//SSDDMAConfig(display.PixBuffer, SSD1306_PIXELS_X * SSD1306_PAGES);
 	SSD1306InitStruct(&display, &SSDSelectChip, &SSDDeSelectChip, &SSDSetDataMode, &SSDSetCommandMode, &SSDSendByte, &SSDSendDMA, &SSDResetActive, &SSDResetInactive, &SSDDelay);
-	xTaskCreate(vTaskSSD1306, (const char*)"ssd", configMINIMAL_STACK_SIZE, (void*)&display, 8, NULL);
+	xTaskCreate(vTaskSSD1306, (const char*)"ssd", configMINIMAL_STACK_SIZE+300, (void*)&display, 8, NULL);
 
 
 
