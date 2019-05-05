@@ -5,11 +5,11 @@
  *      Author: E6430
  */
 
+#include <Console/Console.h>
+#include <Console/TomThumb.h>
 #include "FreeRTOS.h"
 #include "TaskSSD1306.h"
 #include "ssd1306.h"
-#include "utils/Typewriter/Console.h"
-#include "utils/Typewriter/TomThumb.h"
 
 void vTaskSSD1306(void *pvParameters){
 	sSSDdisplay *pDisplay = (sSSDdisplay *)pvParameters;

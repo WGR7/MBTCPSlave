@@ -5,13 +5,13 @@
  *      Author: E6430
  */
 
-#ifndef UTILS_TYPEWRITER_CONSOLE_H_
-#define UTILS_TYPEWRITER_CONSOLE_H_
+#ifndef UTILS_CONSOLE_CONSOLE_H_
+#define UTILS_CONSOLE_CONSOLE_H_
 
 // This is a pixel-by-pixel, line-by-line app-specific console. Utilizes Adafruits GFX library GFXfont structure for storing fonts
 
 #include <stdio.h>
-#include "gfxfont.h"
+#include <Console/gfxfont.h>
 
 // To be delivered by user:
 // A functions that sets pixel in [x,y] on the display
@@ -38,4 +38,4 @@ void ConsolePutChar(sConsole *Console, char NewChar);
 void ConsoleFeedBuffer(sConsole *Console, char *Buffer, uint8_t Size);
 void ConsoleClear(sConsole *Console);
 
-#endif /* UTILS_TYPEWRITER_CONSOLE_H_ */
+#endif /* UTILS_CONSOLE_CONSOLE_H_ */

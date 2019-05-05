@@ -5,9 +5,9 @@
  *      Author: E6430
  */
 
-#include "console.h"
-#include "gfxfont.h"
-#include "Typewriter.h"
+#include <inttypes.h>
+#include <Console/Console.h>
+#include <Console/gfxfont.h>
 #include <string.h>
 
 void ConsoleScrollUp(sConsole *Console);
