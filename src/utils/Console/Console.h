@@ -5,6 +5,10 @@
  *      Author: E6430
  */
 
+// Outside of ifndef guards - every module that uses console.h needs it during its own compilation
+#define CONSOLEPRINTMAXLEN 30
+extern char _tmpprintbuffer[CONSOLEPRINTMAXLEN];
+
 #ifndef UTILS_CONSOLE_CONSOLE_H_
 #define UTILS_CONSOLE_CONSOLE_H_
 
@@ -38,8 +42,10 @@
 extern void ConsoleSetPix(uint8_t, uint8_t);
 
 // Easy print for console output
-#define CONSOLEPRINTMAXLEN 30
-#define CONSOLEPRINT(con,...) char _tmpprintbuffer[CONSOLEPRINTMAXLEN]; snprintf(_tmpprintbuffer, sizeof(_tmpprintbuffer), __VA_ARGS__); ConsoleFeedBuffer(con, _tmpprintbuffer, sizeof(_tmpprintbuffer));
+
+
+//#define CONSOLEPRINT(con,...) char _tmpprintbuffer[CONSOLEPRINTMAXLEN]; snprintf(_tmpprintbuffer, sizeof(_tmpprintbuffer), __VA_ARGS__); ConsoleFeedBuffer(con, _tmpprintbuffer, sizeof(_tmpprintbuffer));
+#define CONSOLEPRINT(con,...) snprintf(_tmpprintbuffer, sizeof(_tmpprintbuffer), __VA_ARGS__); ConsoleFeedBuffer(con, _tmpprintbuffer, sizeof(_tmpprintbuffer));
 
 // Main console structure
 typedef struct {
@@ -49,6 +55,9 @@ typedef struct {
 	uint8_t uXStart, uYStart, uXAdvance, uYAdvance;
 	GFXfont sFont;
 }sConsole;
+
+// Some higher up piece of code will allocate it
+extern sConsole console;
 
 // Interface functions:
 

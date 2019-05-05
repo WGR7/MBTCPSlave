@@ -6,10 +6,12 @@
  */
 
 #include <Console/Console.h>
-#include <Console/TomThumb.h>
+//#include <Console/TomThumb.h>
 #include "FreeRTOS.h"
 #include "TaskSSD1306.h"
 #include "ssd1306.h"
+
+//extern sConsole console;
 
 void vTaskSSD1306(void *pvParameters){
 	sSSDdisplay *pDisplay = (sSSDdisplay *)pvParameters;
@@ -17,10 +19,12 @@ void vTaskSSD1306(void *pvParameters){
 	SSD1306ClearBuffer(pDisplay);
 	SSD1306SendBuffer(pDisplay);
 
-	char consolebuffer[8*25];
-	sConsole console;
-	ConsoleInit(&console, consolebuffer, 8, 25, 0, 6, 5, 8, TomThumb);
-	ConsoleClear(&console);
+	CONSOLEPRINT(&console, "Starting display task\n");
+
+	//char consolebuffer[8*25];
+	//sConsole console;
+	//ConsoleInit(&console, consolebuffer, 8, 25, 0, 6, 5, 8, TomThumb);
+	//ConsoleClear(&console);
 
 	uint8_t asciipointer = 21;
 

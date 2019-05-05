@@ -23,6 +23,9 @@
 #include "ssd1306.h"
 #include "ssd1306_port_f103.h"
 #include "TaskSSD1306.h"
+#include "utils/Console/Console.h"
+#include "utils/Console/TomThumb.h"
+
 // Wiznet stuff
 #define _WIZCHIP_					W5500
 #define _WIZCHIP_IO_MODE_           _WIZCHIP_IO_MODE_SPI_
@@ -39,6 +42,10 @@ static void vTaskAlive(void *pvParameters);
 
 // Display structure
 sSSDdisplay display;
+// Text console
+char consolebuffer[8*25];
+sConsole console;
+
 
 // MUTEX for SPI access
 SemaphoreHandle_t SPI_Mutex;
@@ -59,12 +66,6 @@ int main(void)
 	reg_wizchip_spiburst_cbfunc(W5500_IF_ReadBurst, W5500_IF_WriteBurst);
 	reg_wizchip_spi_cbfunc(W5500_IF_ReadByte, W5500_IF_WriteByte);
 
-	uint8_t version=0;
-	version = getVERSIONR();
-
-	// fprintf test
-	FILE teststream;
-	fprintf(&teststream, "dupa1\ndupa2");
 
 
 	/*
@@ -108,12 +109,13 @@ int main(void)
 	SPI_Mutex = xSemaphoreCreateMutex();
 
 	// Display control stuff
-
 	//SSDDMAConfig(display.PixBuffer, SSD1306_PIXELS_X * SSD1306_PAGES);
 	SSD1306InitStruct(&display, &SSDSelectChip, &SSDDeSelectChip, &SSDSetDataMode, &SSDSetCommandMode, &SSDSendByte, &SSDSendDMA, &SSDResetActive, &SSDResetInactive, &SSDDelay);
 	xTaskCreate(vTaskSSD1306, (const char*)"ssd", configMINIMAL_STACK_SIZE+300, (void*)&display, 8, NULL);
 
-
+	// Console stuff
+	ConsoleInit(&console, consolebuffer, 8, 25, 0, 6, 5, 8, TomThumb);
+	ConsoleClear(&console);
 
 	//xTaskCreate(vTaskDHCPClient, (const char*)"dhcpc", 2*configMINIMAL_STACK_SIZE, NULL, 6, NULL);
 
@@ -128,6 +130,7 @@ int main(void)
 	discoveryconf.SocketNumber = SOCKETNO_DISCOVERY;
 	//xTaskCreate(vTaskDiscoveryServer, (const char*)"dis", 150, (void*)&discoveryconf, 7, NULL);
 
+	CONSOLEPRINT(&console, "Starting FreeRTOS scheduler\n");
 	vTaskStartScheduler();
 
 

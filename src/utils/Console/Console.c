@@ -13,6 +13,8 @@
 void ConsoleScrollUp(sConsole *Console);
 uint8_t ConsoleDrawChar(uint8_t base_x, uint8_t base_y, char character, GFXfont font);
 
+char _tmpprintbuffer[CONSOLEPRINTMAXLEN];
+
 sConsole * ConsoleInit(sConsole *Console, char *cBuffer, uint8_t uRows, uint8_t uColumns, uint8_t uXStart, uint8_t uYStart, uint8_t uXAdvance, uint8_t uYAdvance, GFXfont sFont){
 	Console->cCharacterBuffer 		= cBuffer;
 	Console->uRowsCount 			= uRows;

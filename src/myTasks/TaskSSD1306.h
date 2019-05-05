@@ -8,7 +8,7 @@
 #ifndef MYTASKS_TASKSSD1306_H_
 #define MYTASKS_TASKSSD1306_H_
 
-#define REFRESH_PERIOD_MS	100
+#define REFRESH_PERIOD_MS	300
 
 void vTaskSSD1306(void *pvParameters);
 
