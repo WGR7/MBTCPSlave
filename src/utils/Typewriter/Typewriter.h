@@ -25,6 +25,9 @@ typedef struct{
 
 void sTextLineInit(sTextLine*, char *, uint8_t, uint8_t, uint8_t, const GFXfont*);
 void sTextLineSetText(sTextLine*, char*);
+uint8_t sTextLinePutChar(sTextLine*, char);
+uint8_t sTextLineCopyFrom(sTextLine* dest, sTextLine* source);
+void sTextLineClear(sTextLine *);
 void sTextLineDraw(sTextLine*);
 
 uint8_t TypeWriterDrawChar(uint8_t, uint8_t, char, GFXfont);

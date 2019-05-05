@@ -136,3 +136,28 @@ void TypeWriterFloat2Ascii(char *buf, float value, uint8_t precision){
 	buf += TypeWriterInt2Ascii(buf, value_point);
 	*buf = '\0';
 }
+
+uint8_t sTextLinePutChar(sTextLine* line, char newchar){
+	if(line->Length >= line->MaxLen){
+		// No more space! Return 0!
+		return 0;
+	}else{
+		if(newchar == '\b'){
+			if(line->Length > 0){
+				//line->Length-=1;
+				line->Buffer[--line->Length] = '\0';
+			}
+		}else{
+			line->Buffer[line->Length++] = newchar;
+		}
+		return 1;
+	}
+}
+
+uint8_t sTextLineCopyFrom(sTextLine* dest, sTextLine* source){
+
+}
+
+void sTextLineClear(sTextLine *line){
+
+}
