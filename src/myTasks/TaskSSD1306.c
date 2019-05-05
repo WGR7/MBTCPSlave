@@ -17,10 +17,6 @@ void vTaskSSD1306(void *pvParameters){
 	SSD1306ClearBuffer(pDisplay);
 	SSD1306SendBuffer(pDisplay);
 
-	char consolebuffer[8*25];
-	sConsole console;
-	ConsoleInit(&console, consolebuffer, 8, 25, 0, 6, 5, 8, TomThumb);
-	ConsoleClear(&console);
 
 	uint8_t asciipointer = 21;
 
