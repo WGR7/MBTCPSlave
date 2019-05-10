@@ -25,6 +25,7 @@
 #include "TaskSSD1306.h"
 #include "utils/Console/Console.h"
 #include "utils/Console/TomThumb.h"
+#include "utils/UartTerminal/UartTerminal.h"
 
 // Wiznet stuff
 #define _WIZCHIP_					W5500
@@ -55,6 +56,9 @@ int main(void)
 	CustomInit();
 	RCC_ClocksTypeDef zegary;
 	RCC_GetClocksFreq(&zegary);
+
+	printf("Why you not work!?\n");
+
 
 	// relevant for freertos
 	NVIC_PriorityGroupConfig( NVIC_PriorityGroup_4 );

@@ -10,6 +10,7 @@
 #include "stm32f10x_gpio.h"
 #include "stm32f10x_flash.h"
 #include "misc.h"
+#include "app_config.h"
 
 /**
   * @brief  Configures all the hardware for custom needs
@@ -21,22 +22,15 @@ void CustomInit(void){
 	//CustomGPIOConfig();
 	CustomSPIConfig();
 
+#ifdef USE_USART2_FOR_DEBUG_PRINT
+	Uart2Init(9600);
+#endif
+
+
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 
 
-	// Nucleo LD2 user led config - PA5 (GPIOA @APB2)
-	/* PA5 will be used for SPI1 SCK!
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-	GPIO_InitTypeDef ledconf;
-	ledconf.GPIO_Mode = GPIO_Mode_Out_PP;
-	ledconf.GPIO_Pin = GPIO_Pin_5;
-	ledconf.GPIO_Speed = GPIO_Speed_2MHz;
-	GPIO_Init(GPIOA, &ledconf);
-	GPIO_SetBits(GPIOA, GPIO_Pin_5);
-	GPIO_ResetBits(GPIOA, GPIO_Pin_5);
-	GPIO_SetBits(GPIOA, GPIO_Pin_5);
-	GPIO_ResetBits(GPIOA, GPIO_Pin_5);
-	 */
+
 
 	SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK_Div8);
 	//64MHz AHB -> /8

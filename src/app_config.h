@@ -15,5 +15,6 @@
 #define PORTNO_CLI				1234
 #define PORTNO_DISCOVERY		1235
 
+#define USE_USART2_FOR_DEBUG_PRINT	1
 
 #endif /* APP_CONFIG_H_ */
