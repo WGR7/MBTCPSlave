@@ -66,10 +66,10 @@
 #define configGENERATE_RUN_TIME_STATS	0
 #define configCHECK_FOR_STACK_OVERFLOW	2
 #define configUSE_RECURSIVE_MUTEXES		0
-#define configUSE_MALLOC_FAILED_HOOK	1
+#define configUSE_MALLOC_FAILED_HOOK	0
 #define configUSE_APPLICATION_TASK_TAG	0
 #define configUSE_COUNTING_SEMAPHORES	0
-//#define configSUPPORT_STATIC_ALLOCATION 1	// tego w ogóle nie by³o
+#define configSUPPORT_STATIC_ALLOCATION 1	// tego w ogóle nie by³o
 
 
 /* Co-routine definitions. */
@@ -77,7 +77,7 @@
 #define configMAX_CO_ROUTINE_PRIORITIES ( 2 )
 
 /* Software timer definitions. */
-#define configUSE_TIMERS				1
+#define configUSE_TIMERS				0
 #define configTIMER_TASK_PRIORITY		( 3 )
 #define configTIMER_QUEUE_LENGTH		5
 #define configTIMER_TASK_STACK_DEPTH	( configMINIMAL_STACK_SIZE )

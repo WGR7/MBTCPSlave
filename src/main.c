@@ -111,7 +111,10 @@ int main(void)
 	// Display control stuff
 	//SSDDMAConfig(display.PixBuffer, SSD1306_PIXELS_X * SSD1306_PAGES);
 	SSD1306InitStruct(&display, &SSDSelectChip, &SSDDeSelectChip, &SSDSetDataMode, &SSDSetCommandMode, &SSDSendByte, &SSDSendDMA, &SSDResetActive, &SSDResetInactive, &SSDDelay);
-	xTaskCreate(vTaskSSD1306, (const char*)"ssd", configMINIMAL_STACK_SIZE+300, (void*)&display, 8, NULL);
+	//xTaskCreate(vTaskSSD1306, (const char*)"ssd", configMINIMAL_STACK_SIZE+64, (void*)&display, 8, NULL);
+	static StackType_t display_stack[128];
+	static StaticTask_t display_tcb;
+	xTaskCreateStatic(vTaskSSD1306, (const char*)"ssd", 128, (void*)&display, 8, &display_stack, &display_tcb);
 
 	// Console stuff
 	ConsoleInit(&console, consolebuffer, 8, 25, 0, 6, 5, 8, TomThumb);
@@ -157,13 +160,37 @@ static void vTaskAlive( void *pvParameters ){
 	}
 }
 */
+
+void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer,
+                                    StackType_t **ppxIdleTaskStackBuffer,
+                                    uint32_t *pulIdleTaskStackSize )
+{
+/* If the buffers to be provided to the Idle task are declared inside this
+function then they must be declared static - otherwise they will be allocated on
+the stack and so not exists after this function exits. */
+static StaticTask_t xIdleTaskTCB;
+static StackType_t uxIdleTaskStack[ configMINIMAL_STACK_SIZE ];
+
+    /* Pass out a pointer to the StaticTask_t structure in which the Idle task's
+    state will be stored. */
+    *ppxIdleTaskTCBBuffer = &xIdleTaskTCB;
+
+    /* Pass out the array that will be used as the Idle task's stack. */
+    *ppxIdleTaskStackBuffer = uxIdleTaskStack;
+
+    /* Pass out the size of the array pointed to by *ppxIdleTaskStackBuffer.
+    Note that, as the array is necessarily of type StackType_t,
+    configMINIMAL_STACK_SIZE is specified in words, not bytes. */
+    *pulIdleTaskStackSize = configMINIMAL_STACK_SIZE;
+}
+
 void vApplicationStackOverflowHook( TaskHandle_t xTask, char *pcTaskName ){
 	while(1){}
 }
 // Because fuck you! Compiler wants it any way despite it being switched off in FreeRTOSConfig...
-void vApplicationMallocFailedHook( void ){
-	while(1){}
-}
+//void vApplicationMallocFailedHook( void ){
+//	while(1){}
+//}
 void vApplicationIdleHook(void){}
 
 void vApplicationTickHook(void){}
