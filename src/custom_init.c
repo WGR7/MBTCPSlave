@@ -9,6 +9,7 @@
 #include "stm32f10x_rcc.h"
 #include "stm32f10x_gpio.h"
 #include "stm32f10x_flash.h"
+#include "utils/pindebug.h"
 #include "misc.h"
 
 /**
@@ -17,12 +18,13 @@
   * @retval None
   */
 void CustomInit(void){
-	CustomClockConfigHSI64();
+
+	CustomClockConfigHSI16();
+
 	//CustomGPIOConfig();
 	CustomSPIConfig();
 
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
-
 
 	// Nucleo LD2 user led config - PA5 (GPIOA @APB2)
 	/* PA5 will be used for SPI1 SCK!
@@ -39,12 +41,12 @@ void CustomInit(void){
 	 */
 
 	SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK_Div8);
+
 	//64MHz AHB -> /8
 	// 80000 ticks 	-> 100Hz SysTick
 	// 800000 ticks -> 10Hz SysTicks
-	SysTick_Config(80000);
-
-
+	//SysTick_Config(80000);
+	// Commented out - FreeRTOS will do that?
 }
 
 /**
@@ -54,24 +56,27 @@ void CustomInit(void){
   * @param  None
   * @retval None
   */
-void CustomClockConfigHSI64(void){
+void CustomClockConfigHSI16(void){
 	RCC_DeInit();
 	RCC_HSICmd(ENABLE);
-	RCC_PLLConfig(RCC_PLLSource_HSI_Div2, RCC_PLLMul_16);
+
+	FLASH_PrefetchBufferCmd(FLASH_PrefetchBuffer_Enable);
+
+	//RCC_PLLConfig(RCC_PLLSource_HSI_Div2, RCC_PLLMul_16);		// PLL output - 8MHz /2 x16 = 64MHz
+	RCC_PLLConfig(RCC_PLLSource_HSI_Div2, RCC_PLLMul_4);		// PLL output - 8MHz /2 x4 = 16MHz
 	RCC_PLLCmd(ENABLE);
-	RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
-	RCC_HCLKConfig(RCC_SYSCLK_Div1);
-	RCC_PCLK1Config(RCC_HCLK_Div2);
-	RCC_PCLK2Config(RCC_HCLK_Div2);
+	RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);					// SYSCLK taken from PLL output
+	RCC_HCLKConfig(RCC_SYSCLK_Div1);							// AHBPrescaler = 1, HCLK = SYSCLK
+	RCC_PCLK1Config(RCC_HCLK_Div2);								// PCLK1 = HCLK/2
+	RCC_PCLK2Config(RCC_HCLK_Div2);								// PCLK2 = HCLK/2
 
-	//apparently necessary
-	FLASH_SetLatency(FLASH_Latency_2);
-
+	//apparently necessary - flash is working way slower than system bus
+	//FLASH_SetLatency(FLASH_Latency_2);
 	// update SystemCoreClock variable
 	SystemCoreClockUpdate();
 }
 
-void CustomSPIConfig(void){
+void CustomSPIConfig(){
 	// SPI configuration:
 	// PA_5 - SCK
 	// PA_6 - MISO
@@ -137,6 +142,11 @@ void CustomSPIConfig(void){
 	SPI_Init(SPI1, &spiconf);
 	// SPI enable
 	SPI_Cmd(SPI1, ENABLE);
+
+	// debug helper:
+#ifdef USE_PIN_DEBUG
+	PinDebug_HWConfig();
+#endif
 
 }
 

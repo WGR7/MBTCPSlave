@@ -8,9 +8,16 @@
 #ifndef CUSTOM_INIT_H_
 #define CUSTOM_INIT_H_
 
+#include "app_config.h"
+
+
 void CustomInit(void);
 void CustomClockConfig(void);
-void CustomClockConfigHSI64(void);
+void CustomClockConfigHSI16(void);
 void CustomGPIOConfig(void);
+void CustomSPIConfig();
+
+
+
 
 #endif /* CUSTOM_INIT_H_ */

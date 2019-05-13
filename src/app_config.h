@@ -15,5 +15,8 @@
 #define PORTNO_CLI				1234
 #define PORTNO_DISCOVERY		1235
 
+// Simple timing debug with logic analyzer. Configure outputs in "custom_init.h"
+#define USE_PIN_DEBUG				1
+
 
 #endif /* APP_CONFIG_H_ */

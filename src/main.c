@@ -25,6 +25,7 @@
 #include "TaskSSD1306.h"
 #include "utils/Console/Console.h"
 #include "utils/Console/TomThumb.h"
+#include "utils/pindebug.h"
 
 // Wiznet stuff
 #define _WIZCHIP_					W5500
@@ -50,11 +51,19 @@ sConsole console;
 // MUTEX for SPI access
 SemaphoreHandle_t SPI_Mutex;
 
+// temporary, for testing
+extern void AT24Cxxx_HWSetup();
+extern int16_t AT24Cxxx_RandomRead(uint8_t DeviceAddress, uint16_t Register);
+
 int main(void)
 {
+
+
 	CustomInit();
 	RCC_ClocksTypeDef zegary;
 	RCC_GetClocksFreq(&zegary);
+
+
 
 	// relevant for freertos
 	NVIC_PriorityGroupConfig( NVIC_PriorityGroup_4 );
@@ -66,6 +75,18 @@ int main(void)
 	reg_wizchip_spiburst_cbfunc(W5500_IF_ReadBurst, W5500_IF_WriteBurst);
 	reg_wizchip_spi_cbfunc(W5500_IF_ReadByte, W5500_IF_WriteByte);
 
+	AT24Cxxx_HWSetup();
+
+	AT24Cxxx_ByteWrite(0b00000011, 15, 150);
+	AT24Cxxx_ByteWrite(0b00000011, 16, 160);
+	AT24Cxxx_ByteWrite(0b00000011, 17, 170);
+
+	uint8_t readval=0;
+	readval=AT24Cxxx_RandomRead(0b00000011, 14);
+	readval=AT24Cxxx_RandomRead(0b00000011, 15);
+	readval=AT24Cxxx_RandomRead(0b00000011, 16);
+	readval=AT24Cxxx_RandomRead(0b00000011, 17);
+	readval=AT24Cxxx_RandomRead(0b00000011, 18);
 
 
 	/*
