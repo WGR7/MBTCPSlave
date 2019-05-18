@@ -145,15 +145,19 @@ void port_AT24Cxxx_HWSetup(){
 }
 
 uint8_t port_AT24Cxxx_CheckStartConditionOK(){
-	return I2C_CheckEvent(I2C1, I2C_EVENT_MASTER_MODE_SELECT);
+	return (uint8_t)I2C_CheckEvent(I2C1, I2C_EVENT_MASTER_MODE_SELECT);
 }
 
 uint8_t port_AT24Cxxx_CheckAddressACK(){
-	return I2C_CheckEvent(I2C1, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED);
+	return (uint8_t)I2C_CheckEvent(I2C1, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED);
 }
 
 uint8_t port_AT24Cxxx_CheckDataSendACK(){
-	return I2C_CheckEvent(I2C1, I2C_EVENT_MASTER_BYTE_TRANSMITTED)
+	return (uint8_t)I2C_CheckEvent(I2C1, I2C_EVENT_MASTER_BYTE_TRANSMITTED);
+}
+
+uint8_t port_AT24Cxxx_CheckDataReceived(){
+	return (uint8_t)I2C_CheckEvent(I2C1, I2C_EVENT_MASTER_BYTE_RECEIVED);
 }
 
 void port_AT24Cxxx_ACKSetOn(){
@@ -172,8 +176,13 @@ void port_AT24Cxxx_GenerateStop(){
 	I2C_GenerateSTOP(I2C1, ENABLE);
 }
 
-void port_AT24Cxxx_SendAddress(uint8_t uAddress){
-	I2C_Send7bitAddress(I2C1, uAddress, I2C_Direction_Transmitter);
+void port_AT24Cxxx_SendAddress(uint8_t uAddress, uint8_t Read){
+	if(Read == 0){
+		I2C_Send7bitAddress(I2C1, uAddress, I2C_Direction_Transmitter);
+	}else{
+		I2C_Send7bitAddress(I2C1, uAddress, I2C_Direction_Receiver);
+	}
+
 }
 
 void port_AT24Cxxx_SendData(uint8_t uDataByte){

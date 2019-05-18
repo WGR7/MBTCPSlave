@@ -26,6 +26,8 @@
 #include "utils/Console/Console.h"
 #include "utils/Console/TomThumb.h"
 #include "utils/pindebug.h"
+#include "utils/AT24Cxxx/AT24Cxxx.h"
+
 
 // Wiznet stuff
 #define _WIZCHIP_					W5500
@@ -63,7 +65,8 @@ int main(void)
 	RCC_ClocksTypeDef zegary;
 	RCC_GetClocksFreq(&zegary);
 
-
+	PINDEBUG_CH_A_OFF;
+	PINDEBUG_CH_B_OFF;
 
 	// relevant for freertos
 	NVIC_PriorityGroupConfig( NVIC_PriorityGroup_4 );
@@ -77,17 +80,17 @@ int main(void)
 
 	AT24Cxxx_HWSetup();
 
-	AT24Cxxx_ByteWrite(0b00000011, 15, 150);
-	AT24Cxxx_ByteWrite(0b00000011, 16, 160);
-	AT24Cxxx_ByteWrite(0b00000011, 17, 170);
+//	AT24Cxxx_ByteWrite(0b00000011, 15, 150);
+//	AT24Cxxx_ByteWrite(0b00000011, 16, 160);
+//	AT24Cxxx_ByteWrite(0b00000011, 17, 170);
 
-	uint8_t readval=0;
-	readval=AT24Cxxx_RandomRead(0b00000011, 14);
-	readval=AT24Cxxx_RandomRead(0b00000011, 15);
-	readval=AT24Cxxx_RandomRead(0b00000011, 16);
-	readval=AT24Cxxx_RandomRead(0b00000011, 17);
-	readval=AT24Cxxx_RandomRead(0b00000011, 18);
-
+	uint8_t readval[40];
+	memset(readval, 0x00, 40);
+	eResult result[4];
+	result[0] = AT24Cxxx_ReadToBuffer(0b00000011, 10, 10, readval);
+	result[1] = AT24Cxxx_ReadToBuffer(0b00000011, 10, 10, readval+10);
+	result[2] = AT24Cxxx_ReadToBuffer(0b00000011, 10, 10, readval+20);
+	result[3] = AT24Cxxx_ReadToBuffer(0b00000011, 10, 10, readval+30);
 
 	/*
 	// prepare IP config
