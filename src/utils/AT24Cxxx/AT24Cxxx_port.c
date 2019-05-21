@@ -169,6 +169,7 @@ void port_AT24Cxxx_ACKSetOff(){
 }
 
 void port_AT24Cxxx_GenerateStart(){
+
 	I2C_GenerateSTART(I2C1, ENABLE);
 }
 

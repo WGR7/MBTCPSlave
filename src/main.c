@@ -80,17 +80,22 @@ int main(void)
 
 	AT24Cxxx_HWSetup();
 
+	uint8_t result = 0;
+	result = UT_WriteRead1Page();
+
+
+
 //	AT24Cxxx_ByteWrite(0b00000011, 15, 150);
 //	AT24Cxxx_ByteWrite(0b00000011, 16, 160);
 //	AT24Cxxx_ByteWrite(0b00000011, 17, 170);
 
-	uint8_t readval[40];
-	memset(readval, 0x00, 40);
-	eResult result[4];
-	result[0] = AT24Cxxx_ReadToBuffer(0b00000011, 10, 10, readval);
-	result[1] = AT24Cxxx_ReadToBuffer(0b00000011, 10, 10, readval+10);
-	result[2] = AT24Cxxx_ReadToBuffer(0b00000011, 10, 10, readval+20);
-	result[3] = AT24Cxxx_ReadToBuffer(0b00000011, 10, 10, readval+30);
+	//uint8_t readval[40];
+	//memset(readval, 0x00, 40);
+	//eResult result[4];
+	//result[0] = AT24Cxxx_ReadToBuffer(0b00000011, 10, 10, readval);
+	//result[1] = AT24Cxxx_ReadToBuffer(0b00000011, 10, 10, readval+10);
+	//result[2] = AT24Cxxx_ReadToBuffer(0b00000011, 10, 10, readval+20);
+	//result[3] = AT24Cxxx_ReadToBuffer(0b00000011, 10, 10, readval+30);
 
 	/*
 	// prepare IP config
