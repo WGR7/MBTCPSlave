@@ -20,7 +20,7 @@
 #define WRITE_ADDR(x)	ADDRESS_PREFIX|(x<<1)
 
 // timeouts for transmission error control
-#define AFTER_START_TIMEOUT			30000		// really 8
+#define AFTER_START_TIMEOUT			1000		// really 8
 #define AFTER_DEV_ADDRESS_TIMEOUT	500		// really 140
 #define AFTER_SEND_DATA_TIMEOUT		200		// really 140
 #define RECV_DATA_TIMEOUT			200
@@ -46,7 +46,7 @@
 
 void 	AT24Cxxx_HWSetup();
 //uint8_t	AT24C_RandomRead(uint8_t uDeviceAddr);
-int32_t AT24Cxxx_ReadToBuffer(uint8_t uDevAddress, uint16_t uMemAddress, uint16_t uLength, uint8_t *puTargetBuffer);
+//int32_t AT24Cxxx_ReadToBuffer(uint8_t uDevAddress, uint16_t uMemAddress, uint16_t uLength, uint8_t *puTargetBuffer);
 int8_t AR24Cxxx_PageWriteFromBuffer(uint8_t uDevAddress, uint16_t uMemAddress, uint16_t uLength, uint8_t *puSourceBuffer);
 
 #ifdef INCLUDE_UNIT_TESTS
