@@ -81,7 +81,7 @@ int main(void)
 	AT24Cxxx_HWSetup();
 
 	uint8_t result = 0;
-	result = UT_WriteRead1Page();
+	result = UT_WriteReadTest();
 
 
 

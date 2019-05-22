@@ -45,7 +45,6 @@ int32_t AT24Cxxx_ReadToBuffer(uint8_t uDevAddress, uint16_t uMemAddress, uint16_
 
 	uint8_t retry_count = 0;
 	port_AT24Cxxx_ACKSetOn();
-	uint8_t go_on = TRUE;
 	uint16_t uReadBytes=0;
 
 	while(1){
@@ -103,7 +102,7 @@ int32_t AT24Cxxx_ReadToBuffer(uint8_t uDevAddress, uint16_t uMemAddress, uint16_
 }
 
 
-int8_t AR24Cxxx_PageWriteFromBuffer(uint8_t uDevAddress, uint16_t uMemAddress, uint16_t uLength, uint8_t *puSourceBuffer){
+int8_t AT24Cxxx_PageWriteFromBuffer(uint8_t uDevAddress, uint16_t uMemAddress, uint16_t uLength, uint8_t *puSourceBuffer){
 	if(uDevAddress>3){
 		return AT_WRONG_ADDR;
 	}
@@ -158,9 +157,38 @@ int8_t AR24Cxxx_PageWriteFromBuffer(uint8_t uDevAddress, uint16_t uMemAddress, u
 	return iWrittenBytes;
 }
 
+int32_t AT24Cxxx_WriteFromBuffer(uint8_t uDevAddress, uint16_t uMemAddress, uint16_t uLength, uint8_t *puSourceBuffer){
+	if(uDevAddress>3){
+		return AT_WRONG_ADDR;
+	}
+	if(uLength==0){
+		return AT_0_LENGTH;
+	}
+	if(!puSourceBuffer){
+		return AT_BUFFER_ERROR;
+	}
+
+	uint16_t uBytesLeft = uLength;
+	uint8_t	*puWorkingPointer = puSourceBuffer;
+	uint16_t uMemIndex = uMemAddress;
+	while(uBytesLeft > 0){
+		int8_t write_result = AT24Cxxx_PageWriteFromBuffer(uDevAddress, uMemIndex, uBytesLeft, puWorkingPointer);
+		if(write_result < 1){
+			return AT_ERROR;
+		}else{
+			uBytesLeft -= (uint16_t)write_result;
+			puWorkingPointer += (uint8_t)write_result;
+			uMemIndex += (uint16_t)write_result;
+		}
+	}
+	return uLength;
+}
+
+
+
 #ifdef INCLUDE_UNIT_TESTS
 
-uint8_t UT_WriteRead1Page(){
+uint8_t UT_WriteReadTest(){
 	uint8_t retval=0;
 	// prepare data to write
 #define PATTERN1_ADDR	0
@@ -180,18 +208,19 @@ uint8_t UT_WriteRead1Page(){
 	// write it
 
 	int8_t writeresult1 = -1;
-	writeresult1 = AR24Cxxx_PageWriteFromBuffer(DEVICE_ADDRESS, PATTERN1_ADDR, sizeof(source1), source1);
+	writeresult1 = AT24Cxxx_PageWriteFromBuffer(DEVICE_ADDRESS, PATTERN1_ADDR, sizeof(source1), source1);
 	if(writeresult1!=sizeof(source1)){
 		return 1;
 	}
 	int8_t writeresult2 = -1;
-	writeresult2 = AR24Cxxx_PageWriteFromBuffer(DEVICE_ADDRESS, PATTERN2_ADDR, sizeof(source2), source2);
+	writeresult2 = AT24Cxxx_PageWriteFromBuffer(DEVICE_ADDRESS, PATTERN2_ADDR, sizeof(source2), source2);
 	if(writeresult2!=sizeof(source2)){
 		return 2;
 	}
+	// cross-page write
 	int8_t writeresult3 = -1;
-	writeresult3 = AR24Cxxx_PageWriteFromBuffer(DEVICE_ADDRESS, PATTERN3_ADDR, sizeof(source3), source3);
-	if(writeresult3!=14){	// must write only 14 bytes as we approach to end of page (50 + 14 = 64)
+	writeresult3 = AT24Cxxx_WriteFromBuffer(DEVICE_ADDRESS, PATTERN3_ADDR, sizeof(source3), source3);
+	if(writeresult3!=sizeof(source3)){
 		return 3;
 	}
 
@@ -202,7 +231,7 @@ uint8_t UT_WriteRead1Page(){
 
 	readresult1 = AT24Cxxx_ReadToBuffer(DEVICE_ADDRESS, PATTERN1_ADDR, sizeof(source1), readval1);
 	readresult2 = AT24Cxxx_ReadToBuffer(DEVICE_ADDRESS, PATTERN2_ADDR, sizeof(source2), readval2);
-	readresult3 = AT24Cxxx_ReadToBuffer(DEVICE_ADDRESS, PATTERN3_ADDR, 14, readval3);
+	readresult3 = AT24Cxxx_ReadToBuffer(DEVICE_ADDRESS, PATTERN3_ADDR, sizeof(source3), readval3);
 	// compare it
 	if(memcmp(source1, readval1, sizeof(source1))!=0){
 		return 4;
