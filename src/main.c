@@ -80,8 +80,8 @@ int main(void)
 
 	AT24Cxxx_HWSetup();
 
-	uint8_t result = 0;
-	result = UT_WriteReadTest();
+	//uint8_t result = 0;
+	//result = UT_WriteReadTest();
 
 
 

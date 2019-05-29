@@ -10,41 +10,61 @@
 
 #include <inttypes.h>
 
-// User-selectable device address
+/* User-selectable device address. Corresponds with A0, A1 pins. */
 #define DEVICE_ADDRESS	3	// a0=1, a1=1
 
-// helpers
-#define ADDRESS_PREFIX	0b10100000
-#define WRITE_MASK		0b00000000
-#define READ_MASK		0b00000001
-#define READ_ADDR(x)	ADDRESS_PREFIX|(x<<1)|READ_MASK
-#define WRITE_ADDR(x)	ADDRESS_PREFIX|(x<<1)
-
-// this many times AT24C will be asked again for ACK after addressing
-#define RETRY_MAX_COUNT			5
-
-// AT24 chip page size in bytes
+/* AT24 chip page size in bytes */
 #define PAGES_SIZE				64
 
-// unit tests?
-#define INCLUDE_UNIT_TESTS		1
+/* Values return by library functions
+ */
+#define	AT_ERROR 				-1		/* General error occured			*/
+#define	AT_OK 					0		/* No error							*/
+#define	AT_WRONG_ADDR			-2		/* Wrong device address				*/
+#define	AT_0_LENGTH				-3		/* 0 length read/write requested	*/
+#define	AT_BUFFER_ERROR			-4		/* Target/source buffer NULL		*/
+#define	AT_START_TIMEOUT		-5		/* \								*/
+#define	AT_DEV_ADDR_TIMEOUT		-6		/* | Any of these means				*/
+#define	AT_SEND_DATA_TIMEOUT	-7		/* | some timeout occured			*/
+#define	AT_RECV_TIMEOUT			-8		/* /								*/
 
-// Values return by library functions
-#define	AT_ERROR 				-1
-#define	AT_OK 					0
-#define	AT_WRONG_ADDR			-2
-#define	AT_0_LENGTH				-3
-#define	AT_BUFFER_ERROR			-4
-#define	AT_START_TIMEOUT		-5
-#define	AT_DEV_ADDR_TIMEOUT		-6
-#define	AT_SEND_DATA_TIMEOUT	-7
-#define	AT_RECV_TIMEOUT			-8
+/*****************************************
+ ***** Library interface functions *******
+ *****************************************
+ */
 
-// Library interface functions
+/* \brief Hardware setup
+ *
+ * Call this function to setup the hardware for I2C operation
+ * \param none
+ * \return none
+ */
 void 	AT24Cxxx_HWSetup();
+
+/* \brief Read from EEPROM to buffer
+ *
+ * Call this function to perform a random position random length read from EEPROM to data buffer
+ * \param 	uDevAddress - I2C bus address of EEPROM to read, can be of value 0, 1, 2, 3 only
+ * \param 	uMemAddress - starting address to read in EEPROM memory
+ * \param 	uLength - how many bytes to read
+ * \param 	puTargetBuffer - pointer to a data buffer that is at least uLength long
+ * \return 	Number of read bytes or one of the negative return values
+ */
 int32_t AT24Cxxx_ReadToBuffer(uint8_t uDevAddress, uint16_t uMemAddress, uint16_t uLength, uint8_t *puTargetBuffer);
-int8_t AT24Cxxx_PageWriteFromBuffer(uint8_t uDevAddress, uint16_t uMemAddress, uint16_t uLength, uint8_t *puSourceBuffer);
+
+/* \brief Write to EEPROM from buffer
+ *
+ * Call this function to perform a random position random length write to EEPROM from data buffer
+ * \param 	uDevAddress - I2C bus address of EEPROM to read, can be of value 0, 1, 2, 3 only
+ * \param 	uMemAddress - starting address to write in EEPROM memory
+ * \param 	uLength - how many bytes to write
+ * \param 	puSourceBuffer - pointer to a data buffer that is at least uLength long and contains data to be written
+ * \return 	Number of read bytes or one of the negative return values
+ */
 int32_t AT24Cxxx_WriteFromBuffer(uint8_t uDevAddress, uint16_t uMemAddress, uint16_t uLength, uint8_t *puSourceBuffer);
+
+// unit test?
+//#define INCLUDE_UNIT_TESTS
 
 #ifdef INCLUDE_UNIT_TESTS
 uint8_t UT_WriteReadTest();

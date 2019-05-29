@@ -9,11 +9,16 @@
 #include "AT24Cxxx.h"
 #include "utils/pindebug.h"
 
+// helpers
+#define ADDRESS_PREFIX	0b10100000
+#define WRITE_MASK		0b00000000
+#define READ_MASK		0b00000001
+#define READ_ADDR(x)	ADDRESS_PREFIX|(x<<1)|READ_MASK
+#define WRITE_ADDR(x)	ADDRESS_PREFIX|(x<<1)
+// this many times AT24C will be asked again for ACK after addressing
+#define RETRY_MAX_COUNT			5
+
 extern void port_AT24Cxxx_HWSetup();
-extern uint8_t port_AT24Cxxx_CheckStartConditionOK();
-extern uint8_t port_AT24Cxxx_CheckAddressACK();
-extern uint8_t port_AT24Cxxx_CheckDataSendACK();
-extern uint8_t port_AT24Cxxx_CheckDataReceived();
 extern void port_AT24Cxxx_ACKSetOn();
 extern void port_AT24Cxxx_ACKSetOff();
 extern uint8_t port_AT24Cxxx_GenerateStart();
